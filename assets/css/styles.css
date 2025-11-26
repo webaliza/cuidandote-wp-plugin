@@ -1,373 +1,497 @@
 /**
  * Cuidándote Presupuestos - Estilos
- * https://cuidandoteserviciosauxiliares.com
+ * 
+ * Estilos para la visualización del presupuesto detallado
  */
 
-/* ========================================
-   Variables (personalizar según marca)
-   ======================================== */
+/* Variables */
 :root {
-    --cdp-primary: #2e7d32;      /* Verde - ajustar al color de marca */
-    --cdp-primary-dark: #1b5e20;
-    --cdp-secondary: #5c6bc0;
+    --cdp-primary: #2c5f6e;
+    --cdp-primary-light: #4a90a4;
+    --cdp-secondary: #f8f9fa;
     --cdp-text: #333333;
     --cdp-text-light: #666666;
-    --cdp-bg: #ffffff;
-    --cdp-bg-light: #f9f9f9;
     --cdp-border: #e0e0e0;
-    --cdp-success: #4caf50;
-    --cdp-warning: #ff9800;
-    --cdp-error: #f44336;
+    --cdp-success: #28a745;
+    --cdp-warning: #ffc107;
+    --cdp-error: #dc3545;
 }
 
-/* ========================================
-   Contenedor del presupuesto
-   ======================================== */
-
-.cdp-presupuesto {
+/* Contenedor principal */
+.cdp-presupuesto-container {
     max-width: 800px;
-    margin: 2rem auto;
-    padding: 2.5rem;
-    background: var(--cdp-bg);
+    margin: 0 auto;
+    padding: 30px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #ffffff;
+    box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
     border-radius: 12px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
 }
 
-/* ========================================
-   Cabecera del presupuesto
-   ======================================== */
-
-.cdp-presupuesto-header {
+/* Header */
+.cdp-header {
     text-align: center;
-    margin-bottom: 2rem;
-    padding-bottom: 1.5rem;
+    margin-bottom: 30px;
+    padding-bottom: 20px;
     border-bottom: 3px solid var(--cdp-primary);
 }
 
-.cdp-logo-section {
-    margin-bottom: 1rem;
+.cdp-logo {
+    max-width: 200px;
+    height: auto;
+    margin-bottom: 15px;
 }
 
-.cdp-logo-section img {
-    max-height: 80px;
-    width: auto;
-}
-
-.cdp-presupuesto-header h2 {
-    margin: 0 0 0.5rem 0;
-    color: var(--cdp-primary-dark);
-    font-size: 1.75rem;
+.cdp-titulo {
+    font-size: 28px;
+    color: var(--cdp-primary);
+    margin: 0;
     font-weight: 700;
+    letter-spacing: 1px;
 }
 
-.cdp-subtitle {
-    margin: 0 0 1rem 0;
-    color: var(--cdp-text-light);
-    font-size: 1.1rem;
+/* Info servicio */
+.cdp-servicio-info {
+    background: linear-gradient(135deg, var(--cdp-primary-light) 0%, var(--cdp-primary) 100%);
+    color: #ffffff;
+    padding: 25px;
+    border-radius: 12px;
+    text-align: center;
+    margin-bottom: 30px;
 }
 
-.cdp-timestamp {
-    margin: 0.25rem 0;
-    color: var(--cdp-text-light);
-    font-size: 0.9rem;
+.cdp-servicio-info .cdp-label {
+    font-size: 14px;
+    opacity: 0.9;
+    margin: 0 0 5px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
 }
 
-.cdp-reference {
-    margin: 0.25rem 0;
-    font-family: monospace;
-    font-size: 0.9rem;
-    color: var(--cdp-text-light);
-    background: var(--cdp-bg-light);
-    padding: 0.25rem 0.75rem;
-    border-radius: 4px;
-    display: inline-block;
+.cdp-servicio-tipo {
+    font-size: 24px;
+    font-weight: 700;
+    margin: 0 0 10px;
 }
 
-/* ========================================
-   Contenido - Tabla de datos
-   ======================================== */
-
-.cdp-presupuesto-content {
-    margin: 2rem 0;
+.cdp-servicio-info .cdp-nota {
+    font-size: 13px;
+    opacity: 0.85;
+    margin: 0;
+    font-style: italic;
 }
 
-.cdp-data-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin: 1rem 0;
+/* Desglose */
+.cdp-desglose {
+    margin-bottom: 25px;
 }
 
-.cdp-data-table th,
-.cdp-data-table td {
-    padding: 1rem 1.25rem;
-    text-align: left;
+.cdp-seccion-titulo {
+    font-size: 18px;
+    color: var(--cdp-primary);
+    margin: 0 0 20px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid var(--cdp-border);
+}
+
+.cdp-fila {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 0;
     border-bottom: 1px solid var(--cdp-border);
 }
 
-.cdp-data-table th {
-    background: var(--cdp-bg-light);
-    font-weight: 600;
-    color: var(--cdp-text);
-    width: 40%;
-    vertical-align: top;
-    border-left: 3px solid var(--cdp-primary);
-}
-
-.cdp-data-table td {
-    color: var(--cdp-text);
-    background: var(--cdp-bg);
-}
-
-.cdp-data-table tr:hover td {
-    background: #fafafa;
-}
-
-.cdp-data-table tr:last-child th,
-.cdp-data-table tr:last-child td {
+.cdp-fila:last-child {
     border-bottom: none;
 }
 
-/* Tablas anidadas */
-.cdp-data-table .cdp-data-table {
-    margin: 0.5rem 0;
-    border: 1px solid var(--cdp-border);
-    border-radius: 6px;
-    overflow: hidden;
-}
-
-.cdp-level-1 th {
-    background: #f5f5f5;
-    width: 45%;
-    border-left-color: var(--cdp-secondary);
-}
-
-.cdp-level-2 th {
-    background: #f0f0f0;
-    width: 50%;
-    border-left-color: #9e9e9e;
-}
-
-/* ========================================
-   Pie del presupuesto
-   ======================================== */
-
-.cdp-presupuesto-footer {
-    margin-top: 2rem;
-    padding-top: 1.5rem;
-    border-top: 2px solid var(--cdp-border);
-}
-
-.cdp-next-steps {
-    background: linear-gradient(135deg, #e8f5e9 0%, #f1f8e9 100%);
-    padding: 1.5rem;
-    border-radius: 8px;
-    margin-bottom: 1.5rem;
-    border-left: 4px solid var(--cdp-success);
-}
-
-.cdp-next-steps h3 {
-    margin: 0 0 0.75rem 0;
-    color: var(--cdp-primary-dark);
-    font-size: 1.1rem;
-}
-
-.cdp-next-steps p {
-    margin: 0;
+.cdp-concepto {
+    font-size: 16px;
     color: var(--cdp-text);
+}
+
+.cdp-valor {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--cdp-primary);
+}
+
+.cdp-fila-destacada {
+    background-color: var(--cdp-secondary);
+    margin: 0 -15px;
+    padding: 15px;
+    border-radius: 8px;
+    border: none;
+}
+
+/* Cuota info */
+.cdp-cuota-info {
+    background-color: var(--cdp-secondary);
+    padding: 25px;
+    border-radius: 12px;
+    margin-bottom: 25px;
+}
+
+.cdp-cuota-info h3 {
+    font-size: 16px;
+    color: var(--cdp-primary);
+    margin: 0 0 15px;
+}
+
+.cdp-cuota-info ul {
+    margin: 0;
+    padding-left: 20px;
+}
+
+.cdp-cuota-info li {
+    font-size: 14px;
+    color: var(--cdp-text-light);
+    margin-bottom: 8px;
+    line-height: 1.5;
+}
+
+.cdp-cuota-info li::marker {
+    color: var(--cdp-primary);
+}
+
+/* Total */
+.cdp-total {
+    background: linear-gradient(135deg, var(--cdp-primary) 0%, #1a3d47 100%);
+    color: #ffffff;
+    padding: 25px;
+    border-radius: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.cdp-total-label {
+    font-size: 18px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.cdp-total-valor {
+    font-size: 32px;
+    font-weight: 700;
+}
+
+/* Nota legal */
+.cdp-nota-legal {
+    font-size: 13px;
+    color: var(--cdp-text-light);
+    font-style: italic;
+    text-align: center;
+    margin: 20px 0;
     line-height: 1.6;
 }
 
-.cdp-contact-info {
-    text-align: center;
-    color: var(--cdp-text-light);
-    font-size: 0.95rem;
-}
-
-.cdp-contact-info p {
-    margin: 0.5rem 0;
-}
-
-.cdp-contact-info a {
-    color: var(--cdp-primary);
-    text-decoration: none;
-    font-weight: 500;
-}
-
-.cdp-contact-info a:hover {
-    text-decoration: underline;
-}
-
-/* ========================================
-   Mensajes de estado
-   ======================================== */
-
-.cdp-message {
-    padding: 1.25rem 1.5rem;
-    border-radius: 8px;
-    margin: 1.5rem 0;
-    text-align: center;
-}
-
-.cdp-message p {
-    margin: 0;
-    font-size: 1rem;
-}
-
-.cdp-message-info {
-    background: #e3f2fd;
-    border: 1px solid #90caf9;
-    color: #1565c0;
-}
-
-.cdp-message-warning {
-    background: #fff8e1;
-    border: 1px solid #ffcc80;
-    color: #e65100;
-}
-
-.cdp-message-error {
-    background: #ffebee;
-    border: 1px solid #ef9a9a;
-    color: #c62828;
-}
-
-.cdp-message-success {
-    background: #e8f5e9;
-    border: 1px solid #a5d6a7;
-    color: #2e7d32;
-}
-
-/* ========================================
-   Contenedor del formulario (iframe)
-   ======================================== */
-
-.cdp-formulario-container {
-    width: 100%;
-    margin: 1.5rem 0;
-}
-
-.cdp-formulario-iframe {
-    width: 100%;
-    border: none;
+/* Comisión */
+.cdp-comision {
+    background-color: #fff9e6;
+    border: 2px solid #f0c14b;
+    padding: 25px;
     border-radius: 12px;
-    background: var(--cdp-bg);
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    text-align: center;
+    margin-bottom: 25px;
 }
 
-/* ========================================
-   Enlaces y elementos especiales
-   ======================================== */
+.cdp-comision h3 {
+    font-size: 16px;
+    color: var(--cdp-text);
+    margin: 0 0 10px;
+}
 
-.cdp-data-table a {
+.cdp-comision-valor {
+    font-size: 28px;
+    font-weight: 700;
     color: var(--cdp-primary);
+    margin: 0 0 10px;
+}
+
+.cdp-comision .cdp-nota {
+    font-size: 13px;
+    color: var(--cdp-text-light);
+    margin: 0;
+    font-style: italic;
+}
+
+/* Info cliente */
+.cdp-cliente-info {
+    background-color: var(--cdp-secondary);
+    padding: 25px;
+    border-radius: 12px;
+    margin-bottom: 25px;
+}
+
+.cdp-cliente-info h3 {
+    font-size: 18px;
+    color: var(--cdp-primary);
+    margin: 0 0 15px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid var(--cdp-border);
+}
+
+.cdp-cliente-info p {
+    font-size: 15px;
+    color: var(--cdp-text);
+    margin: 0 0 10px;
+}
+
+.cdp-cliente-info p:last-child {
+    margin-bottom: 0;
+}
+
+/* CTA */
+.cdp-cta {
+    text-align: center;
+    margin: 30px 0;
+}
+
+.cdp-btn-contratar {
+    display: inline-block;
+    background: linear-gradient(135deg, var(--cdp-success) 0%, #1e7e34 100%);
+    color: #ffffff;
+    font-size: 20px;
+    font-weight: 700;
     text-decoration: none;
-    font-weight: 500;
+    padding: 18px 50px;
+    border-radius: 50px;
+    box-shadow: 0 4px 15px rgba(40, 167, 69, 0.4);
+    transition: transform 0.3s, box-shadow 0.3s;
 }
 
-.cdp-data-table a:hover {
-    text-decoration: underline;
-    color: var(--cdp-primary-dark);
+.cdp-btn-contratar:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(40, 167, 69, 0.5);
+    color: #ffffff;
+    text-decoration: none;
 }
 
-/* ========================================
-   Responsive
-   ======================================== */
+.cdp-cta-telefono {
+    font-size: 16px;
+    color: var(--cdp-text-light);
+    margin: 20px 0 0;
+}
 
+.cdp-cta-telefono a {
+    color: var(--cdp-primary);
+    font-weight: 600;
+    text-decoration: none;
+}
+
+/* Logos */
+.cdp-logos {
+    text-align: center;
+    padding: 30px 0;
+    border-top: 1px solid var(--cdp-border);
+    border-bottom: 1px solid var(--cdp-border);
+    margin-bottom: 25px;
+}
+
+.cdp-logos-titulo {
+    font-size: 14px;
+    color: var(--cdp-primary);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin: 0 0 20px;
+}
+
+.cdp-logos-grid {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.cdp-logos-grid img {
+    height: 40px;
+    width: auto;
+    opacity: 0.9;
+}
+
+.cdp-agencia-num {
+    font-size: 12px;
+    color: var(--cdp-text-light);
+    margin: 15px 0 0;
+}
+
+/* Footer */
+.cdp-footer {
+    background: var(--cdp-primary);
+    color: #ffffff;
+    padding: 30px;
+    border-radius: 12px;
+    text-align: center;
+}
+
+.cdp-footer-titulo {
+    font-size: 22px;
+    font-weight: 700;
+    margin: 0 0 10px;
+    letter-spacing: 1px;
+}
+
+.cdp-footer-subtitulo {
+    font-size: 14px;
+    opacity: 0.9;
+    margin: 0 0 5px;
+}
+
+.cdp-footer-telefono {
+    font-size: 20px;
+    font-weight: 600;
+    margin: 20px 0 10px;
+}
+
+.cdp-footer-marca {
+    font-size: 16px;
+    margin: 0;
+    opacity: 0.9;
+}
+
+/* Acciones */
+.cdp-acciones {
+    text-align: center;
+    margin-top: 25px;
+}
+
+.cdp-btn-imprimir {
+    background: var(--cdp-secondary);
+    color: var(--cdp-text);
+    border: 2px solid var(--cdp-border);
+    font-size: 16px;
+    padding: 12px 30px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.cdp-btn-imprimir:hover {
+    background: var(--cdp-primary);
+    color: #ffffff;
+    border-color: var(--cdp-primary);
+}
+
+/* Mensajes */
+.cdp-mensaje {
+    max-width: 600px;
+    margin: 50px auto;
+    padding: 40px;
+    border-radius: 12px;
+    text-align: center;
+}
+
+.cdp-mensaje h2 {
+    font-size: 24px;
+    margin: 0 0 15px;
+}
+
+.cdp-mensaje p {
+    font-size: 16px;
+    margin: 0 0 10px;
+    line-height: 1.6;
+}
+
+.cdp-mensaje-info {
+    background-color: #e7f3ff;
+    border: 2px solid #b6d4fe;
+    color: #084298;
+}
+
+.cdp-mensaje-error {
+    background-color: #f8d7da;
+    border: 2px solid #f5c2c7;
+    color: #842029;
+}
+
+.cdp-mensaje-warning {
+    background-color: #fff3cd;
+    border: 2px solid #ffecb5;
+    color: #664d03;
+}
+
+/* Responsive */
 @media (max-width: 768px) {
-    .cdp-presupuesto {
-        margin: 1rem;
-        padding: 1.5rem;
+    .cdp-presupuesto-container {
+        padding: 20px;
+        margin: 10px;
         border-radius: 8px;
     }
     
-    .cdp-presupuesto-header h2 {
-        font-size: 1.4rem;
+    .cdp-titulo {
+        font-size: 22px;
     }
     
-    .cdp-data-table th,
-    .cdp-data-table td {
-        display: block;
-        width: 100%;
-        padding: 0.75rem 1rem;
+    .cdp-servicio-tipo {
+        font-size: 20px;
     }
     
-    .cdp-data-table th {
-        background: var(--cdp-bg-light);
-        border-bottom: none;
-        padding-bottom: 0.25rem;
-        font-size: 0.9rem;
-        color: var(--cdp-text-light);
+    .cdp-fila {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 5px;
     }
     
-    .cdp-data-table td {
-        padding-top: 0.25rem;
-        padding-bottom: 1rem;
-        font-size: 1rem;
+    .cdp-total {
+        flex-direction: column;
+        text-align: center;
+        gap: 10px;
     }
     
-    .cdp-data-table tr {
-        border-bottom: 1px solid var(--cdp-border);
-        display: block;
-        margin-bottom: 0.5rem;
+    .cdp-total-valor {
+        font-size: 28px;
     }
     
-    .cdp-data-table tr:last-child {
-        border-bottom: none;
+    .cdp-logos-grid {
+        gap: 15px;
     }
     
-    .cdp-next-steps {
-        padding: 1rem;
+    .cdp-logos-grid img {
+        height: 30px;
+    }
+    
+    .cdp-btn-contratar {
+        padding: 15px 35px;
+        font-size: 18px;
     }
 }
 
-@media (max-width: 480px) {
-    .cdp-presupuesto {
-        margin: 0.5rem;
-        padding: 1rem;
-    }
-    
-    .cdp-presupuesto-header h2 {
-        font-size: 1.2rem;
-    }
-    
-    .cdp-subtitle {
-        font-size: 1rem;
-    }
-}
-
-/* ========================================
-   Estilos para impresión
-   ======================================== */
-
+/* Estilos para impresión */
 @media print {
-    .cdp-presupuesto {
+    .no-print {
+        display: none !important;
+    }
+    
+    .cdp-presupuesto-container {
         box-shadow: none;
-        max-width: none;
+        max-width: 100%;
         padding: 0;
-        margin: 0;
     }
     
-    .cdp-presupuesto-header {
-        border-bottom-width: 2px;
-    }
-    
-    .cdp-data-table th {
-        background: #f5f5f5 !important;
+    .cdp-servicio-info,
+    .cdp-total,
+    .cdp-footer {
         -webkit-print-color-adjust: exact;
         print-color-adjust: exact;
     }
     
-    .cdp-next-steps {
-        background: #f5f5f5 !important;
-        -webkit-print-color-adjust: exact;
-        print-color-adjust: exact;
-    }
-    
-    .cdp-formulario-container {
+    .cdp-btn-contratar {
         display: none;
     }
-    
-    a[href]:after {
-        content: none !important;
-    }
+}
+
+/* Formulario container */
+.cdp-formulario-container {
+    width: 100%;
+    min-height: 100vh;
+}
+
+.cdp-formulario-container iframe {
+    display: block;
 }
