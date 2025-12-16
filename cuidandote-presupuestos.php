@@ -337,3 +337,7 @@ class Cuidandote_Presupuestos {
 
 // Inicializar plugin
 add_action('plugins_loaded', array('Cuidandote_Presupuestos', 'get_instance'));
+
+// Cargar sistema de notificación a administradores
+require_once CDP_PLUGIN_DIR . 'includes/admin-notification/loader.php';
+require_once CDP_PLUGIN_DIR . 'includes/admin-notification/class-cdp-admin-notification-migration.php';
