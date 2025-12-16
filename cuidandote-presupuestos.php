@@ -3,7 +3,7 @@
  * Plugin Name: Cuidándote Presupuestos
  * Plugin URI: https://cuidandoteserviciosauxiliares.com
  * Description: Sistema de presupuestos automáticos para servicios de cuidadores. Recibe datos del formulario Nuxt, calcula presupuestos y envía emails profesionales.
- * Version: 2.0.0
+ * Version: 2.1.0
  * Author: Webaliza
  * Author URI: https://webaliza.com
  * Text Domain: cuidandote-presupuestos
@@ -18,7 +18,7 @@ if (!defined('ABSPATH')) {
 }
 
 // Constantes del plugin
-define('CDP_VERSION', '2.0.0');
+define('CDP_VERSION', '2.1.0');
 define('CDP_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('CDP_PLUGIN_URL', plugin_dir_url(__FILE__));
 define('CDP_PLUGIN_BASENAME', plugin_basename(__FILE__));
@@ -66,47 +66,35 @@ class Cuidandote_Presupuestos {
      * Inicializar hooks
      */
     private function init_hooks() {
-        // Activación/Desactivación
+        // Activación y desactivación
         register_activation_hook(__FILE__, array($this, 'activate'));
         register_deactivation_hook(__FILE__, array($this, 'deactivate'));
         
-        // Inicializar componentes
-        add_action('init', array($this, 'init'));
-        add_action('rest_api_init', array('CDP_API', 'register_routes'));
-        
-        // Estilos y scripts
-        add_action('wp_enqueue_scripts', array($this, 'enqueue_styles'));
+        // Inicializar clases
+        add_action('init', array($this, 'init_classes'));
         
         // Admin
         add_action('admin_menu', array($this, 'add_admin_menu'));
         add_action('admin_init', array($this, 'register_settings'));
         
-        // CORS para API
+        // CORS para Nuxt
         add_action('rest_api_init', array($this, 'add_cors_headers'), 15);
-    }
-    
-    /**
-     * Inicialización
-     */
-    public function init() {
-        // Inicializar shortcodes
-        new CDP_Shortcodes();
         
-        // Crear página de presupuesto si no existe
-        $this->create_budget_page();
+        // Estilos
+        add_action('wp_enqueue_scripts', array($this, 'enqueue_styles'));
     }
     
     /**
      * Activación del plugin
      */
     public function activate() {
-        // Crear tablas en la base de datos
+        // Crear tablas
         CDP_Database::create_tables();
         
-        // Crear página de presupuesto
-        $this->create_budget_page();
+        // Crear páginas
+        $this->create_pages();
         
-        // Limpiar rewrite rules
+        // Limpiar permalinks
         flush_rewrite_rules();
     }
     
@@ -118,17 +106,27 @@ class Cuidandote_Presupuestos {
     }
     
     /**
-     * Crear página de presupuesto automáticamente
+     * Crear páginas necesarias
      */
-    private function create_budget_page() {
-        $page_slug = 'presupuesto-cuidadores';
-        $page = get_page_by_path($page_slug);
-        
-        if (!$page) {
+    private function create_pages() {
+        // Página de detalle del presupuesto
+        if (!get_page_by_path('presupuesto-cuidadores')) {
             wp_insert_post(array(
-                'post_title'     => 'Tu Presupuesto Personalizado',
-                'post_name'      => $page_slug,
+                'post_title'     => 'Presupuesto Cuidadores',
+                'post_name'      => 'presupuesto-cuidadores',
                 'post_content'   => '[cuidandote_presupuesto]',
+                'post_status'    => 'publish',
+                'post_type'      => 'page',
+                'comment_status' => 'closed',
+            ));
+        }
+        
+        // Página de agradecimiento (presupuesto solicitado)
+        if (!get_page_by_path('presupuesto-solicitado')) {
+            wp_insert_post(array(
+                'post_title'     => 'Presupuesto Solicitado',
+                'post_name'      => 'presupuesto-solicitado',
+                'post_content'   => '[cuidandote_presupuesto_solicitado]',
                 'post_status'    => 'publish',
                 'post_type'      => 'page',
                 'comment_status' => 'closed',
@@ -137,43 +135,11 @@ class Cuidandote_Presupuestos {
     }
     
     /**
-     * Encolar estilos
+     * Inicializar clases
      */
-    public function enqueue_styles() {
-        if (is_page('presupuesto-cuidadores')) {
-            wp_enqueue_style(
-                'cuidandote-presupuestos',
-                CDP_PLUGIN_URL . 'assets/css/styles.css',
-                array(),
-                CDP_VERSION
-            );
-        }
-    }
-    
-    /**
-     * Añadir headers CORS
-     */
-    public function add_cors_headers() {
-        $allowed_origins = array(
-            'https://cuidandote.webaliza.cat',
-            'https://cuidandoteserviciosauxiliares.com',
-            'http://localhost:3000',
-        );
-        
-        $origin = isset($_SERVER['HTTP_ORIGIN']) ? $_SERVER['HTTP_ORIGIN'] : '';
-        
-        if (in_array($origin, $allowed_origins)) {
-            header("Access-Control-Allow-Origin: $origin");
-            header('Access-Control-Allow-Methods: POST, GET, OPTIONS');
-            header('Access-Control-Allow-Headers: Content-Type, Authorization');
-            header('Access-Control-Allow-Credentials: true');
-        }
-        
-        // Manejar preflight requests
-        if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
-            status_header(200);
-            exit();
-        }
+    public function init_classes() {
+        new CDP_API();
+        new CDP_Shortcodes();
     }
     
     /**
@@ -190,7 +156,7 @@ class Cuidandote_Presupuestos {
     }
     
     /**
-     * Registrar ajustes
+     * Registrar configuraciones
      */
     public function register_settings() {
         register_setting('cdp_settings', 'cdp_nuxt_url');
@@ -202,60 +168,112 @@ class Cuidandote_Presupuestos {
      * Página de administración
      */
     public function admin_page() {
+        // Procesar acciones
+        if (isset($_POST['cdp_crear_tablas']) && check_admin_referer('cdp_crear_tablas_nonce')) {
+            CDP_Database::create_tables();
+            echo '<div class="notice notice-success"><p>✅ Tablas creadas/actualizadas correctamente.</p></div>';
+        }
+        
         $nuxt_url = get_option('cdp_nuxt_url', 'https://cuidandote.webaliza.cat');
         $email_from = get_option('cdp_email_from', 'info@cuidandoteserviciosauxiliares.com');
         $email_from_name = get_option('cdp_email_from_name', 'Cuidándote Servicios Auxiliares');
         
-        // Obtener estadísticas
+        // Verificar estado de las tablas
         global $wpdb;
-        $tabla = $wpdb->prefix . 'cdp_presupuestos';
-        $total = $wpdb->get_var("SELECT COUNT(*) FROM $tabla");
-        $hoy = $wpdb->get_var($wpdb->prepare(
-            "SELECT COUNT(*) FROM $tabla WHERE DATE(created_at) = %s",
-            current_time('Y-m-d')
-        ));
+        $tabla_presupuestos = $wpdb->prefix . 'cdp_presupuestos';
+        $tabla_salarial = $wpdb->prefix . 'cdp_tabla_salarial';
+        $tabla_tarifas = $wpdb->prefix . 'cdp_tarifas';
+        
+        $existe_presupuestos = $wpdb->get_var("SHOW TABLES LIKE '$tabla_presupuestos'");
+        $existe_salarial = $wpdb->get_var("SHOW TABLES LIKE '$tabla_salarial'");
+        $existe_tarifas = $wpdb->get_var("SHOW TABLES LIKE '$tabla_tarifas'");
+        
+        $registros_salarial = $existe_salarial ? $wpdb->get_var("SELECT COUNT(*) FROM $tabla_salarial") : 0;
+        $registros_tarifas = $existe_tarifas ? $wpdb->get_var("SELECT COUNT(*) FROM $tabla_tarifas") : 0;
+        
+        // Obtener estadísticas
+        $total = $existe_presupuestos ? $wpdb->get_var("SELECT COUNT(*) FROM $tabla_presupuestos") : 0;
+        $hoy = $existe_presupuestos ? $wpdb->get_var("SELECT COUNT(*) FROM $tabla_presupuestos WHERE DATE(created_at) = CURDATE()") : 0;
+        
         ?>
         <div class="wrap">
             <h1>🏠 Cuidándote Presupuestos</h1>
             
+            <!-- Estado de tablas -->
+            <div class="card" style="max-width: 800px; padding: 20px; margin-top: 20px;">
+                <h2>🗄️ Estado de las Tablas</h2>
+                <table class="widefat" style="margin-bottom: 15px;">
+                    <thead>
+                        <tr>
+                            <th>Tabla</th>
+                            <th>Estado</th>
+                            <th>Registros</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>cdp_presupuestos</code></td>
+                            <td><?php echo $existe_presupuestos ? '✅ OK' : '❌ No existe'; ?></td>
+                            <td><?php echo esc_html($total ?: 0); ?></td>
+                        </tr>
+                        <tr>
+                            <td><code>cdp_tabla_salarial</code></td>
+                            <td><?php echo $existe_salarial ? '✅ OK' : '❌ No existe'; ?></td>
+                            <td><?php echo esc_html($registros_salarial); ?> / 40</td>
+                        </tr>
+                        <tr>
+                            <td><code>cdp_tarifas</code></td>
+                            <td><?php echo $existe_tarifas ? '✅ OK' : '❌ No existe'; ?></td>
+                            <td><?php echo esc_html($registros_tarifas); ?> / 8</td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <?php if (!$existe_presupuestos || !$existe_salarial || !$existe_tarifas || $registros_salarial < 40 || $registros_tarifas < 8): ?>
+                <div style="background: #fff3cd; border: 1px solid #ffc107; padding: 15px; border-radius: 5px; margin-bottom: 15px;">
+                    <strong>⚠️ Atención:</strong> Faltan tablas o datos. Pulsa el botón para crearlas.
+                </div>
+                <?php endif; ?>
+                
+                <form method="post">
+                    <?php wp_nonce_field('cdp_crear_tablas_nonce'); ?>
+                    <button type="submit" name="cdp_crear_tablas" class="button button-primary">
+                        🔧 Crear / Reparar Tablas
+                    </button>
+                </form>
+            </div>
+            
+            <!-- Estadísticas -->
             <div class="card" style="max-width: 800px; padding: 20px; margin-top: 20px;">
                 <h2>📊 Estadísticas</h2>
                 <p><strong>Total presupuestos:</strong> <?php echo esc_html($total ?: 0); ?></p>
                 <p><strong>Presupuestos hoy:</strong> <?php echo esc_html($hoy ?: 0); ?></p>
             </div>
             
-            <div class="card" style="max-width: 800px; padding: 20px; margin-top: 20px;">
-                <h2>🔗 Endpoint API</h2>
-                <code style="background: #f0f0f0; padding: 10px; display: block; margin: 10px 0;">
-                    POST <?php echo esc_url(rest_url('cuidandote/v1/presupuesto')); ?>
-                </code>
-                <p class="description">Este es el endpoint donde la aplicación Nuxt debe enviar los datos del formulario.</p>
-            </div>
-            
+            <!-- Configuración -->
             <div class="card" style="max-width: 800px; padding: 20px; margin-top: 20px;">
                 <h2>⚙️ Configuración</h2>
                 <form method="post" action="options.php">
                     <?php settings_fields('cdp_settings'); ?>
                     <table class="form-table">
                         <tr>
-                            <th><label for="cdp_nuxt_url">URL App Nuxt</label></th>
+                            <th><label for="cdp_nuxt_url">URL Formulario Nuxt</label></th>
                             <td>
-                                <input type="url" id="cdp_nuxt_url" name="cdp_nuxt_url" 
+                                <input type="url" name="cdp_nuxt_url" id="cdp_nuxt_url" 
                                        value="<?php echo esc_attr($nuxt_url); ?>" class="regular-text">
-                                <p class="description">URL donde está alojado el formulario Nuxt</p>
                             </td>
                         </tr>
                         <tr>
                             <th><label for="cdp_email_from">Email remitente</label></th>
                             <td>
-                                <input type="email" id="cdp_email_from" name="cdp_email_from" 
+                                <input type="email" name="cdp_email_from" id="cdp_email_from" 
                                        value="<?php echo esc_attr($email_from); ?>" class="regular-text">
                             </td>
                         </tr>
                         <tr>
                             <th><label for="cdp_email_from_name">Nombre remitente</label></th>
                             <td>
-                                <input type="text" id="cdp_email_from_name" name="cdp_email_from_name" 
+                                <input type="text" name="cdp_email_from_name" id="cdp_email_from_name" 
                                        value="<?php echo esc_attr($email_from_name); ?>" class="regular-text">
                             </td>
                         </tr>
@@ -264,42 +282,58 @@ class Cuidandote_Presupuestos {
                 </form>
             </div>
             
+            <!-- Endpoint -->
             <div class="card" style="max-width: 800px; padding: 20px; margin-top: 20px;">
-                <h2>📝 Estructura JSON esperada</h2>
-                <pre style="background: #f5f5f5; padding: 15px; overflow-x: auto; font-size: 12px;">
-{
-    "contacto": {
-        "name": "Nombre Cliente",
-        "email": "cliente@email.com",
-        "phone": "612345678",
-        "postalCode": "28001",
-        "privacyPolicy": true
-    },
-    "selectedDateTime": {
-        "date": "26-11-2025",
-        "time": "19:56"
-    },
-    "selectedDays": ["LUN", "MAR", "MIE", "JUE", "VIE"],
-    "selectedSchedule": [{
-        "label": "Misma hora todos los días",
-        "value": "same",
-        "days": [{
-            "day": "same",
-            "slots": [{ "from": "09:00", "to": "17:00" }]
-        }]
-    }],
-    "durationType": "larga",
-    "selectedWeeks": "4"
-}
-                </pre>
+                <h2>🔌 Endpoint API</h2>
+                <p><code><?php echo esc_url(rest_url('cuidandote/v1/presupuesto')); ?></code></p>
+                <p><small>Método: POST | Content-Type: application/json</small></p>
             </div>
         </div>
         <?php
     }
+    
+    /**
+     * Añadir headers CORS
+     */
+    public function add_cors_headers() {
+        $nuxt_url = get_option('cdp_nuxt_url', 'https://cuidandote.webaliza.cat');
+        
+        remove_filter('rest_pre_serve_request', 'rest_send_cors_headers');
+        
+        add_filter('rest_pre_serve_request', function($value) use ($nuxt_url) {
+            $origin = isset($_SERVER['HTTP_ORIGIN']) ? $_SERVER['HTTP_ORIGIN'] : '';
+            
+            $allowed_origins = array(
+                $nuxt_url,
+                'https://cuidandote.webaliza.cat',
+                'http://localhost:3000',
+            );
+            
+            if (in_array($origin, $allowed_origins)) {
+                header("Access-Control-Allow-Origin: $origin");
+                header('Access-Control-Allow-Methods: POST, GET, OPTIONS');
+                header('Access-Control-Allow-Headers: Content-Type, Authorization');
+                header('Access-Control-Allow-Credentials: true');
+            }
+            
+            return $value;
+        });
+    }
+    
+    /**
+     * Cargar estilos
+     */
+    public function enqueue_styles() {
+        if (is_page(array('presupuesto-cuidadores', 'presupuesto-solicitado'))) {
+            wp_enqueue_style(
+                'cdp-styles',
+                CDP_PLUGIN_URL . 'assets/css/styles.css',
+                array(),
+                CDP_VERSION
+            );
+        }
+    }
 }
 
 // Inicializar plugin
-function cuidandote_presupuestos() {
-    return Cuidandote_Presupuestos::get_instance();
-}
-add_action('plugins_loaded', 'cuidandote_presupuestos');
+add_action('plugins_loaded', array('Cuidandote_Presupuestos', 'get_instance'));

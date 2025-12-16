@@ -1,192 +1,19 @@
-# Cuidándote Presupuestos
+# Cuidándote Presupuestos v2.1.0
 
 Plugin de WordPress para gestión automática de presupuestos de servicios de cuidadores.
 
-## Descripción
-
-Este plugin recibe datos del formulario Nuxt, calcula presupuestos automáticamente según la tabla salarial 2025, envía emails profesionales con la propuesta de asistencia y muestra el desglose completo del presupuesto mediante un enlace con token único.
-
 ## Características
 
-- ✅ **API REST** para recibir datos del formulario Nuxt
-- ✅ **Cálculo automático** de presupuestos según horas y tipo de servicio
-- ✅ **Tabla salarial 2025** integrada (1-40 horas semanales)
-- ✅ **Emails HTML profesionales** con diseño corporativo
-- ✅ **Página de presupuesto** con desglose completo
-- ✅ **Tokens seguros** con expiración de 30 días
-- ✅ **Panel de administración** para configuración
-- ✅ **Shortcodes** para integración flexible
-- ✅ **Responsive** y preparado para impresión
+- ✅ Recibe datos del formulario Nuxt vía REST API
+- ✅ Calcula presupuestos según tabla salarial 2025
+- ✅ Clasifica automáticamente el tipo de servicio
+- ✅ Envía emails HTML profesionales
+- ✅ Genera tokens únicos con validez de 30 días
+- ✅ Página de agradecimiento tras solicitar presupuesto
+- ✅ Página de detalle del presupuesto con enlace desde email
+- ✅ Panel de administración con estadísticas
 
-## Instalación
-
-1. Sube la carpeta `cuidandote-presupuestos` a `/wp-content/plugins/`
-2. Activa el plugin desde **Plugins** en WordPress
-3. Ve a **Ajustes → Presupuestos** para configurar
-
-El plugin creará automáticamente:
-- Las tablas necesarias en la base de datos
-- La página `/presupuesto-cuidadores/` para mostrar presupuestos
-
-## Configuración
-
-### Panel de Administración
-
-En **Ajustes → Presupuestos** puedes configurar:
-
-| Opción | Descripción |
-|--------|-------------|
-| URL App Nuxt | URL donde está alojado el formulario |
-| Email remitente | Dirección de email para envíos |
-| Nombre remitente | Nombre que aparece en los emails |
-
-### CORS
-
-El plugin ya incluye configuración CORS para estos dominios:
-- `https://cuidandote.webaliza.cat`
-- `https://cuidandoteserviciosauxiliares.com`
-- `http://localhost:3000`
-
-Para añadir más dominios, edita el array `$allowed_origins` en el archivo principal.
-
-## Endpoint API
-
-### Crear Presupuesto
-
-```
-POST /wp-json/cuidandote/v1/presupuesto
-```
-
-**Cuerpo de la petición (JSON):**
-
-```json
-{
-    "contacto": {
-        "name": "María García",
-        "email": "maria@email.com",
-        "phone": "612345678",
-        "postalCode": "28001",
-        "privacyPolicy": true
-    },
-    "selectedDateTime": {
-        "date": "26-11-2025",
-        "time": "19:56"
-    },
-    "selectedDays": ["LUN", "MAR", "MIE", "JUE", "VIE"],
-    "selectedSchedule": [{
-        "label": "Misma hora todos los días",
-        "value": "same",
-        "days": [{
-            "day": "same",
-            "slots": [{ "from": "09:00", "to": "17:00" }]
-        }]
-    }],
-    "durationType": "larga",
-    "selectedWeeks": "4"
-}
-```
-
-**Respuesta exitosa (201):**
-
-```json
-{
-    "success": true,
-    "message": "Presupuesto creado correctamente",
-    "token": "abc123...",
-    "redirect_url": "https://ejemplo.com/presupuesto-cuidadores/?token=abc123...",
-    "email_enviado": true,
-    "presupuesto": {
-        "tipo_servicio": "Externa jornada completa",
-        "pago_mensual": 1762.84,
-        "horas_semanales": 40
-    }
-}
-```
-
-### Health Check
-
-```
-GET /wp-json/cuidandote/v1/health
-```
-
-## Shortcodes
-
-### `[cuidandote_presupuesto]`
-
-Muestra el presupuesto detallado (requiere token en URL).
-
-```php
-[cuidandote_presupuesto]
-[cuidandote_presupuesto class="mi-clase"]
-```
-
-### `[cuidandote_formulario]`
-
-Embebe el formulario Nuxt en un iframe.
-
-```php
-[cuidandote_formulario]
-[cuidandote_formulario src="https://otra-url.com" height="800px"]
-```
-
-## Tipos de Servicio
-
-El plugin clasifica automáticamente el tipo de servicio:
-
-| Tipo | Condición |
-|------|-----------|
-| Interna entre semana | 24h + días L-V |
-| Interna fines de semana | 24h + días SAB-DOM |
-| Interna parcial | 24h + 1-2 días |
-| Externa jornada completa | >20h semanales |
-| Externa media jornada | 4-20h semanales |
-| Externa por horas | ≤4h semanales |
-
-## Tarifas 2025
-
-### Cuota de Mantenimiento
-- Base: 62€
-- IVA: 21%
-- **Total: 75,02€/mes**
-
-### Comisión de Agencia
-- Estándar: 300€ + IVA = **363€**
-- 1 día/semana: 50€ + IVA = **60,50€**
-- 2º cuidador: 30% descuento
-
-### Tabla Salarial (extracto)
-
-| Horas/sem | Salario Bruto | Salario Neto | SS |
-|-----------|--------------|--------------|-----|
-| 8h | 276,27€ | 257,38€ | 84,57€ |
-| 16h | 552,54€ | 515,28€ | 166,85€ |
-| 24h | 828,80€ | 780,25€ | 217,42€ |
-| 32h | 1.105,07€ | 1.033,87€ | 318,84€ |
-| 40h | 1.381,34€ | 1.293,21€ | 394,61€ |
-
-## Integración con Nuxt
-
-En tu aplicación Nuxt, después de enviar el formulario:
-
-```javascript
-const response = await fetch(
-  'https://cuidandoteserviciosauxiliares.com/wp-json/cuidandote/v1/presupuesto',
-  {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(formData)
-  }
-);
-
-const result = await response.json();
-
-if (result.success) {
-  // Redirigir al presupuesto
-  window.top.location.href = result.redirect_url;
-}
-```
-
-## Flujo Completo
+## Flujo de Trabajo
 
 ```
 1. Usuario completa formulario en Nuxt
@@ -199,11 +26,13 @@ if (result.success) {
    ↓
 5. Envía email HTML con enlace al desglose
    ↓
-6. Responde a Nuxt con URL de redirección
+6. Redirige a /presupuesto-solicitado/ (página de gracias)
    ↓
-7. Usuario recibe email y/o es redirigido
+7. Usuario recibe email
    ↓
-8. Al hacer clic, ve el presupuesto completo en WordPress
+8. Clic en "Detalle Presupuesto"
+   ↓
+9. Ve /presupuesto-cuidadores/?token=xxx
 ```
 
 ## Estructura de Archivos
@@ -212,7 +41,7 @@ if (result.success) {
 cuidandote-presupuestos/
 ├── cuidandote-presupuestos.php    # Plugin principal
 ├── includes/
-│   ├── class-cdp-database.php     # Gestión de BD
+│   ├── class-cdp-database.php     # Gestión de BD + tabla salarial
 │   ├── class-cdp-calculator.php   # Cálculo de presupuestos
 │   ├── class-cdp-mailer.php       # Envío de emails
 │   ├── class-cdp-api.php          # Endpoints REST
@@ -223,24 +52,108 @@ cuidandote-presupuestos/
 └── README.md
 ```
 
-## Requisitos
+## Instalación
 
-- WordPress 5.0+
-- PHP 7.4+
-- MySQL/MariaDB
+1. Sube la carpeta `cuidandote-presupuestos` a `/wp-content/plugins/`
+2. Activa el plugin desde **Plugins** en WordPress
+3. Ve a **Ajustes → Presupuestos**
+4. Pulsa "🔧 Crear / Reparar Tablas" si es necesario
+
+El plugin crea automáticamente:
+- Tablas de base de datos
+- Página `/presupuesto-cuidadores/`
+- Página `/presupuesto-solicitado/`
+
+## Endpoint REST API
+
+```
+POST https://tu-dominio.com/wp-json/cuidandote/v1/presupuesto
+```
+
+### Request
+
+```json
+{
+  "contacto": {
+    "name": "María García",
+    "email": "maria@ejemplo.com",
+    "phone": "612345678",
+    "postalCode": "28001",
+    "privacyPolicy": true
+  },
+  "selectedDateTime": {
+    "date": "27-11-2025",
+    "time": "10:00"
+  },
+  "selectedDays": ["LUN", "MAR", "MIE", "JUE", "VIE"],
+  "selectedSchedule": [{
+    "label": "Misma hora todos los días",
+    "value": "same",
+    "days": [{
+      "day": "same",
+      "slots": [{ "from": "09:00", "to": "14:00" }]
+    }]
+  }],
+  "durationType": "larga",
+  "selectedWeeks": "4"
+}
+```
+
+### Response
+
+```json
+{
+  "success": true,
+  "message": "Presupuesto creado correctamente",
+  "token": "uuid-token-xxx",
+  "redirect_url": "https://tu-dominio.com/presupuesto-solicitado/",
+  "email_enviado": true,
+  "presupuesto": {
+    "tipo_servicio": "Externa jornada completa",
+    "pago_mensual": 1147.16,
+    "horas_semanales": 25
+  }
+}
+```
+
+## Shortcodes
+
+| Shortcode | Descripción |
+|-----------|-------------|
+| `[cuidandote_presupuesto]` | Muestra el detalle del presupuesto (requiere token) |
+| `[cuidandote_presupuesto_solicitado]` | Página de agradecimiento |
+| `[cuidandote_formulario]` | Iframe con el formulario Nuxt |
+
+## Configuración CORS
+
+El plugin configura automáticamente CORS para los dominios:
+- URL configurada en ajustes
+- https://cuidandote.webaliza.cat
+- http://localhost:3000 (desarrollo)
+
+## Tablas de Base de Datos
+
+### cdp_presupuestos
+Almacena todos los presupuestos generados con sus cálculos.
+
+### cdp_tabla_salarial
+40 registros con salarios brutos, netos y cotización SS para 1-40 horas semanales.
+
+### cdp_tarifas
+Tarifas configurables: cuota mantenimiento, comisiones, SAD, etc.
 
 ## Changelog
 
+### 2.1.0
+- Nueva página de agradecimiento `/presupuesto-solicitado/`
+- Flujo actualizado: redirección a página de gracias en lugar de detalle
+- Email mantiene enlace al detalle del presupuesto
+
 ### 2.0.0
-- Nueva estructura JSON compatible con formulario Nuxt v.alpha-14
+- Nueva estructura JSON compatible con formulario Nuxt
 - Cálculo automático de horas semanales
 - Clasificación inteligente de tipo de servicio
-- Soporte para semanas parciales
-- Email HTML responsive mejorado
-- Panel de administración con estadísticas
-
-### 1.0.0
-- Versión inicial
+- Email HTML responsive
 
 ---
 

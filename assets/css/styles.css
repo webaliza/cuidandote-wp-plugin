@@ -1,497 +1,92 @@
 /**
  * Cuidándote Presupuestos - Estilos
- * 
- * Estilos para la visualización del presupuesto detallado
+ * Version: 2.1.0
  */
 
 /* Variables */
 :root {
-    --cdp-primary: #2c5f6e;
-    --cdp-primary-light: #4a90a4;
-    --cdp-secondary: #f8f9fa;
-    --cdp-text: #333333;
-    --cdp-text-light: #666666;
-    --cdp-border: #e0e0e0;
-    --cdp-success: #28a745;
+    --cdp-primary: #2c8cbe;
+    --cdp-primary-dark: #1a5276;
+    --cdp-accent: #667eea;
+    --cdp-accent-dark: #764ba2;
+    --cdp-success: #27ae60;
     --cdp-warning: #ffc107;
-    --cdp-error: #dc3545;
+    --cdp-text: #333;
+    --cdp-text-light: #555;
+    --cdp-bg: #f8f9fa;
+    --cdp-border: #e0e0e0;
 }
 
-/* Contenedor principal */
-.cdp-presupuesto-container {
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 30px;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: #ffffff;
-    box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
-    border-radius: 12px;
+/* Reset básico para contenedores */
+.cdp-desglose *,
+.cdp-gracias-container * {
+    box-sizing: border-box;
 }
 
-/* Header */
-.cdp-header {
-    text-align: center;
-    margin-bottom: 30px;
-    padding-bottom: 20px;
-    border-bottom: 3px solid var(--cdp-primary);
-}
-
-.cdp-logo {
-    max-width: 200px;
-    height: auto;
-    margin-bottom: 15px;
-}
-
-.cdp-titulo {
-    font-size: 28px;
-    color: var(--cdp-primary);
-    margin: 0;
-    font-weight: 700;
-    letter-spacing: 1px;
-}
-
-/* Info servicio */
-.cdp-servicio-info {
-    background: linear-gradient(135deg, var(--cdp-primary-light) 0%, var(--cdp-primary) 100%);
-    color: #ffffff;
-    padding: 25px;
-    border-radius: 12px;
-    text-align: center;
-    margin-bottom: 30px;
-}
-
-.cdp-servicio-info .cdp-label {
-    font-size: 14px;
-    opacity: 0.9;
-    margin: 0 0 5px;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-}
-
-.cdp-servicio-tipo {
-    font-size: 24px;
-    font-weight: 700;
-    margin: 0 0 10px;
-}
-
-.cdp-servicio-info .cdp-nota {
-    font-size: 13px;
-    opacity: 0.85;
-    margin: 0;
-    font-style: italic;
-}
-
-/* Desglose */
-.cdp-desglose {
-    margin-bottom: 25px;
-}
-
-.cdp-seccion-titulo {
-    font-size: 18px;
-    color: var(--cdp-primary);
-    margin: 0 0 20px;
-    padding-bottom: 10px;
-    border-bottom: 2px solid var(--cdp-border);
-}
-
-.cdp-fila {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 15px 0;
-    border-bottom: 1px solid var(--cdp-border);
-}
-
-.cdp-fila:last-child {
-    border-bottom: none;
-}
-
-.cdp-concepto {
-    font-size: 16px;
-    color: var(--cdp-text);
-}
-
-.cdp-valor {
-    font-size: 18px;
-    font-weight: 600;
-    color: var(--cdp-primary);
-}
-
-.cdp-fila-destacada {
-    background-color: var(--cdp-secondary);
-    margin: 0 -15px;
-    padding: 15px;
-    border-radius: 8px;
-    border: none;
-}
-
-/* Cuota info */
-.cdp-cuota-info {
-    background-color: var(--cdp-secondary);
-    padding: 25px;
-    border-radius: 12px;
-    margin-bottom: 25px;
-}
-
-.cdp-cuota-info h3 {
-    font-size: 16px;
-    color: var(--cdp-primary);
-    margin: 0 0 15px;
-}
-
-.cdp-cuota-info ul {
-    margin: 0;
-    padding-left: 20px;
-}
-
-.cdp-cuota-info li {
-    font-size: 14px;
-    color: var(--cdp-text-light);
-    margin-bottom: 8px;
-    line-height: 1.5;
-}
-
-.cdp-cuota-info li::marker {
-    color: var(--cdp-primary);
-}
-
-/* Total */
-.cdp-total {
-    background: linear-gradient(135deg, var(--cdp-primary) 0%, #1a3d47 100%);
-    color: #ffffff;
-    padding: 25px;
-    border-radius: 12px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-}
-
-.cdp-total-label {
-    font-size: 18px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-}
-
-.cdp-total-valor {
-    font-size: 32px;
-    font-weight: 700;
-}
-
-/* Nota legal */
-.cdp-nota-legal {
-    font-size: 13px;
-    color: var(--cdp-text-light);
-    font-style: italic;
-    text-align: center;
-    margin: 20px 0;
-    line-height: 1.6;
-}
-
-/* Comisión */
-.cdp-comision {
-    background-color: #fff9e6;
-    border: 2px solid #f0c14b;
-    padding: 25px;
-    border-radius: 12px;
-    text-align: center;
-    margin-bottom: 25px;
-}
-
-.cdp-comision h3 {
-    font-size: 16px;
-    color: var(--cdp-text);
-    margin: 0 0 10px;
-}
-
-.cdp-comision-valor {
-    font-size: 28px;
-    font-weight: 700;
-    color: var(--cdp-primary);
-    margin: 0 0 10px;
-}
-
-.cdp-comision .cdp-nota {
-    font-size: 13px;
-    color: var(--cdp-text-light);
-    margin: 0;
-    font-style: italic;
-}
-
-/* Info cliente */
-.cdp-cliente-info {
-    background-color: var(--cdp-secondary);
-    padding: 25px;
-    border-radius: 12px;
-    margin-bottom: 25px;
-}
-
-.cdp-cliente-info h3 {
-    font-size: 18px;
-    color: var(--cdp-primary);
-    margin: 0 0 15px;
-    padding-bottom: 10px;
-    border-bottom: 2px solid var(--cdp-border);
-}
-
-.cdp-cliente-info p {
-    font-size: 15px;
-    color: var(--cdp-text);
-    margin: 0 0 10px;
-}
-
-.cdp-cliente-info p:last-child {
-    margin-bottom: 0;
-}
-
-/* CTA */
-.cdp-cta {
-    text-align: center;
-    margin: 30px 0;
-}
-
-.cdp-btn-contratar {
-    display: inline-block;
-    background: linear-gradient(135deg, var(--cdp-success) 0%, #1e7e34 100%);
-    color: #ffffff;
-    font-size: 20px;
-    font-weight: 700;
-    text-decoration: none;
-    padding: 18px 50px;
-    border-radius: 50px;
-    box-shadow: 0 4px 15px rgba(40, 167, 69, 0.4);
-    transition: transform 0.3s, box-shadow 0.3s;
-}
-
-.cdp-btn-contratar:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(40, 167, 69, 0.5);
-    color: #ffffff;
-    text-decoration: none;
-}
-
-.cdp-cta-telefono {
-    font-size: 16px;
-    color: var(--cdp-text-light);
-    margin: 20px 0 0;
-}
-
-.cdp-cta-telefono a {
-    color: var(--cdp-primary);
-    font-weight: 600;
-    text-decoration: none;
-}
-
-/* Logos */
-.cdp-logos {
-    text-align: center;
-    padding: 30px 0;
-    border-top: 1px solid var(--cdp-border);
-    border-bottom: 1px solid var(--cdp-border);
-    margin-bottom: 25px;
-}
-
-.cdp-logos-titulo {
-    font-size: 14px;
-    color: var(--cdp-primary);
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    margin: 0 0 20px;
-}
-
-.cdp-logos-grid {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 20px;
-    flex-wrap: wrap;
-}
-
-.cdp-logos-grid img {
-    height: 40px;
-    width: auto;
-    opacity: 0.9;
-}
-
-.cdp-agencia-num {
-    font-size: 12px;
-    color: var(--cdp-text-light);
-    margin: 15px 0 0;
-}
-
-/* Footer */
-.cdp-footer {
-    background: var(--cdp-primary);
-    color: #ffffff;
-    padding: 30px;
-    border-radius: 12px;
-    text-align: center;
-}
-
-.cdp-footer-titulo {
-    font-size: 22px;
-    font-weight: 700;
-    margin: 0 0 10px;
-    letter-spacing: 1px;
-}
-
-.cdp-footer-subtitulo {
-    font-size: 14px;
-    opacity: 0.9;
-    margin: 0 0 5px;
-}
-
-.cdp-footer-telefono {
-    font-size: 20px;
-    font-weight: 600;
-    margin: 20px 0 10px;
-}
-
-.cdp-footer-marca {
-    font-size: 16px;
-    margin: 0;
-    opacity: 0.9;
-}
-
-/* Acciones */
-.cdp-acciones {
-    text-align: center;
-    margin-top: 25px;
-}
-
-.cdp-btn-imprimir {
-    background: var(--cdp-secondary);
-    color: var(--cdp-text);
-    border: 2px solid var(--cdp-border);
-    font-size: 16px;
-    padding: 12px 30px;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: all 0.3s;
-}
-
-.cdp-btn-imprimir:hover {
-    background: var(--cdp-primary);
-    color: #ffffff;
-    border-color: var(--cdp-primary);
-}
-
-/* Mensajes */
-.cdp-mensaje {
-    max-width: 600px;
-    margin: 50px auto;
-    padding: 40px;
-    border-radius: 12px;
-    text-align: center;
-}
-
-.cdp-mensaje h2 {
-    font-size: 24px;
-    margin: 0 0 15px;
-}
-
-.cdp-mensaje p {
-    font-size: 16px;
-    margin: 0 0 10px;
-    line-height: 1.6;
-}
-
-.cdp-mensaje-info {
-    background-color: #e7f3ff;
-    border: 2px solid #b6d4fe;
-    color: #084298;
-}
-
-.cdp-mensaje-error {
-    background-color: #f8d7da;
-    border: 2px solid #f5c2c7;
-    color: #842029;
-}
-
-.cdp-mensaje-warning {
-    background-color: #fff3cd;
-    border: 2px solid #ffecb5;
-    color: #664d03;
-}
-
-/* Responsive */
-@media (max-width: 768px) {
-    .cdp-presupuesto-container {
-        padding: 20px;
-        margin: 10px;
-        border-radius: 8px;
-    }
-    
-    .cdp-titulo {
-        font-size: 22px;
-    }
-    
-    .cdp-servicio-tipo {
-        font-size: 20px;
-    }
-    
-    .cdp-fila {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 5px;
-    }
-    
-    .cdp-total {
-        flex-direction: column;
-        text-align: center;
-        gap: 10px;
-    }
-    
-    .cdp-total-valor {
-        font-size: 28px;
-    }
-    
-    .cdp-logos-grid {
-        gap: 15px;
-    }
-    
-    .cdp-logos-grid img {
-        height: 30px;
-    }
-    
-    .cdp-btn-contratar {
-        padding: 15px 35px;
-        font-size: 18px;
-    }
-}
-
-/* Estilos para impresión */
+/* Estilos de impresión */
 @media print {
-    .no-print {
+    .cdp-desglose {
+        box-shadow: none !important;
+        max-width: 100% !important;
+    }
+    
+    .cdp-cta-box {
         display: none !important;
     }
     
-    .cdp-presupuesto-container {
-        box-shadow: none;
-        max-width: 100%;
-        padding: 0;
-    }
-    
-    .cdp-servicio-info,
-    .cdp-total,
-    .cdp-footer {
-        -webkit-print-color-adjust: exact;
-        print-color-adjust: exact;
-    }
-    
-    .cdp-btn-contratar {
-        display: none;
+    .cdp-desglose-header {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
     }
 }
 
-/* Formulario container */
-.cdp-formulario-container {
-    width: 100%;
-    min-height: 100vh;
+/* Animaciones */
+@keyframes cdp-fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
-.cdp-formulario-container iframe {
-    display: block;
+.cdp-desglose,
+.cdp-gracias-container {
+    animation: cdp-fadeIn 0.5s ease-out;
+}
+
+/* Botones hover */
+.cdp-cta-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(39, 174, 96, 0.4);
+    transition: all 0.3s ease;
+}
+
+/* Links */
+.cdp-desglose a,
+.cdp-gracias-container a {
+    transition: all 0.2s ease;
+}
+
+/* Responsive adicional */
+@media (max-width: 480px) {
+    .cdp-desglose-header h1 {
+        font-size: 22px !important;
+    }
+    
+    .cdp-total-value {
+        font-size: 24px !important;
+    }
+    
+    .cdp-gracias-title {
+        font-size: 22px !important;
+    }
+    
+    .cdp-gracias-step {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
 }
