@@ -208,21 +208,21 @@ class CDP_Shortcodes {
         ob_start();
         ?>
         <style>
-            .cdp-gracias-container { max-width: 680px; margin: 40px auto; padding: 40px; text-align: center; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
-            .cdp-gracias-icon { width: 80px; height: 80px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 30px; }
+            .cdp-gracias-container { max-width: 1024px; margin: 40px auto; padding: 40px; text-align: center; }
+            .cdp-gracias-icon { width: 80px; height: 80px; background: linear-gradient(135deg, #0B8547 0%, #256D9B 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 30px; }
             .cdp-gracias-icon svg { width: 40px; height: 40px; fill: white; }
             .cdp-gracias-title { font-size: 28px; font-weight: 700; color: #1a1a2e; margin-bottom: 15px; }
             .cdp-gracias-subtitle { font-size: 18px; color: #555; margin-bottom: 30px; line-height: 1.6; }
-            .cdp-gracias-card { background: #f8f9fa; border-radius: 12px; padding: 30px; margin: 30px 0; border-left: 4px solid #667eea; text-align: left; }
-            .cdp-gracias-card-title { font-size: 16px; font-weight: 600; color: #667eea; margin-bottom: 15px; display: flex; align-items: center; gap: 10px; }
-            .cdp-gracias-card-title svg { width: 24px; height: 24px; fill: #667eea; }
+            .cdp-gracias-card { background: #f8f9fa; border-radius: 12px; padding: 30px; margin: 30px 0; border-left: 4px solid #046CA5; text-align: left; }
+            .cdp-gracias-card-title { font-size: 16px; font-weight: 600; color: #046CA5; margin-bottom: 15px; display: flex; align-items: center; gap: 10px; }
+            .cdp-gracias-card-title svg { width: 24px; height: 24px; fill: #046CA5; }
             .cdp-gracias-card p { color: #444; line-height: 1.7; margin: 0; }
             .cdp-gracias-steps { text-align: left; margin: 30px 0; }
             .cdp-gracias-step { display: flex; align-items: flex-start; gap: 15px; margin-bottom: 20px; }
-            .cdp-gracias-step-number { width: 32px; height: 32px; background: #667eea; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 14px; flex-shrink: 0; }
+            .cdp-gracias-step-number { width: 32px; height: 32px; background: #046CA5; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 14px; flex-shrink: 0; }
             .cdp-gracias-step-text { color: #333; line-height: 1.6; padding-top: 4px; }
             .cdp-gracias-step-text strong { color: #1a1a2e; }
-            .cdp-gracias-contact { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 25px 30px; border-radius: 12px; margin-top: 30px; }
+            .cdp-gracias-contact { background: linear-gradient(135deg, #0B8547 0%, #256D9B 100%); color: white; padding: 25px 30px; border-radius: 12px; margin-top: 30px; }
             .cdp-gracias-contact p { margin: 0 0 15px; font-size: 15px; }
             .cdp-gracias-contact a { color: white; font-weight: 600; text-decoration: none; font-size: 20px; display: inline-flex; align-items: center; gap: 8px; }
             .cdp-gracias-contact a:hover { text-decoration: underline; }
@@ -292,7 +292,7 @@ class CDP_Shortcodes {
                 <div class="cdp-gracias-step">
                     <div class="cdp-gracias-step-number">2</div>
                     <div class="cdp-gracias-step-text">
-                        <strong>Un consultor te contactará</strong> para resolver cualquier duda y ayudarte a encontrar la mejor solución.
+                        Si lo has solicitado, <strong>un consultor te contactará</strong> para resolver cualquier duda y ayudarte a encontrar la mejor solución.
                     </div>
                 </div>
                 
