@@ -28,17 +28,8 @@ class CDP_API {
                 'methods'             => 'POST',
                 'callback'            => array(__CLASS__, 'crear_presupuesto'),
                 'permission_callback' => '__return_true',
-                'args'                => array(
-                    'contacto' => array(
-                        'required' => true,
-                    ),
-                    'selectedDays' => array(
-                        'required' => true,
-                    ),
-                    'selectedSchedule' => array(
-                        'required' => true,
-                    ),
-                ),
+                // La validación se hace en el callback con validar_datos()
+                // No usar 'args' aquí porque el payload viene envuelto en 'data'
             ),
             array(
                 'methods'             => 'OPTIONS',
