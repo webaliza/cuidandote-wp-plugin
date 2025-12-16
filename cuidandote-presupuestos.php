@@ -162,6 +162,7 @@ class Cuidandote_Presupuestos {
         register_setting('cdp_settings', 'cdp_nuxt_url');
         register_setting('cdp_settings', 'cdp_email_from');
         register_setting('cdp_settings', 'cdp_email_from_name');
+        register_setting('cdp_settings', 'cdp_admin_notification_email');
     }
     
     /**
@@ -177,6 +178,7 @@ class Cuidandote_Presupuestos {
         $nuxt_url = get_option('cdp_nuxt_url', 'https://cuidandote.webaliza.cat');
         $email_from = get_option('cdp_email_from', 'info@cuidandoteserviciosauxiliares.com');
         $email_from_name = get_option('cdp_email_from_name', 'Cuidándote Servicios Auxiliares');
+        $admin_notification_email = get_option('cdp_admin_notification_email', 'info@cuidandoteserviciosauxiliares.com');
         
         // Verificar estado de las tablas
         global $wpdb;
@@ -273,8 +275,16 @@ class Cuidandote_Presupuestos {
                         <tr>
                             <th><label for="cdp_email_from_name">Nombre remitente</label></th>
                             <td>
-                                <input type="text" name="cdp_email_from_name" id="cdp_email_from_name" 
+                                <input type="text" name="cdp_email_from_name" id="cdp_email_from_name"
                                        value="<?php echo esc_attr($email_from_name); ?>" class="regular-text">
+                            </td>
+                        </tr>
+                        <tr>
+                            <th><label for="cdp_admin_notification_email">Email para Notificaciones</label></th>
+                            <td>
+                                <input type="email" name="cdp_admin_notification_email" id="cdp_admin_notification_email"
+                                       value="<?php echo esc_attr($admin_notification_email); ?>" class="regular-text">
+                                <p class="description">Email donde se recibirán las notificaciones de nuevos presupuestos solicitados.</p>
                             </td>
                         </tr>
                     </table>

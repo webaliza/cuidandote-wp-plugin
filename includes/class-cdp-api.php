@@ -97,14 +97,17 @@ class CDP_API {
             
             // Guardar en base de datos
             $presupuesto_id = CDP_Database::guardar_presupuesto($datos_presupuesto);
-            
+
             if (!$presupuesto_id) {
                 throw new Exception('Error al guardar el presupuesto en la base de datos');
             }
-            
+
+            // Disparar hook para que otros componentes puedan reaccionar
+            do_action('cdp_presupuesto_guardado', $presupuesto_id, $datos_presupuesto);
+
             // Obtener presupuesto guardado para enviar email
             $presupuesto = CDP_Database::get_presupuesto_por_token($datos_presupuesto['token']);
-            
+
             // Enviar email
             $mailer = new CDP_Mailer($presupuesto);
             $email_enviado = $mailer->enviar_propuesta();

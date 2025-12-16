@@ -77,7 +77,7 @@ El email por defecto es: `info@cuidandoteserviciosauxiliares.com`
 
 Para cambiarlo:
 
-1. Ve a **Ajustes > Cuidándote** en el panel de WordPress
+1. Ve a **Ajustes > Presupuestos** en el panel de WordPress
 2. Busca el campo **"Email para Notificaciones"**
 3. Cambia el email y guarda
 
