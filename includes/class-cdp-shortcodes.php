@@ -78,7 +78,7 @@ class CDP_Shortcodes {
         ob_start();
         ?>
         <style>
-            .cdp-desglose { max-width: 700px; margin: 40px auto; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+            .cdp-desglose { max-width: 1200px; margin: 40px auto; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
             .cdp-desglose-header { background: linear-gradient(135deg, #2c8cbe 0%, #1a5276 100%); color: white; padding: 30px; border-radius: 12px 12px 0 0; text-align: center; }
             .cdp-desglose-header h1 { margin: 0; font-size: 28px; }
             .cdp-desglose-body { background: white; padding: 30px; border-radius: 0 0 12px 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
@@ -97,13 +97,13 @@ class CDP_Shortcodes {
             .cdp-cuota-info h4 { color: #2c8cbe; margin: 0 0 15px; }
             .cdp-cuota-info ul { margin: 0; padding-left: 20px; color: #555; }
             .cdp-cuota-info li { margin-bottom: 8px; }
-            .cdp-comision-box { background: #fff3cd; border: 1px solid #ffc107; padding: 15px 20px; border-radius: 8px; margin: 20px 0; }
+            .cdp-comision-box { background: #fff3cd; border: 1px solid #ffc107; padding: 15px 20px; border-radius: 8px; margin: 20px 0;  text-align: center; }
             .cdp-comision-box h4 { color: #856404; margin: 0 0 10px; }
             .cdp-comision-box p { margin: 0; color: #856404; }
             .cdp-cta-box { text-align: center; padding: 30px 0; }
-            .cdp-cta-button { display: inline-block; background: linear-gradient(135deg, #27ae60 0%, #1e8449 100%); color: white; padding: 15px 40px; border-radius: 30px; text-decoration: none; font-size: 16px; font-weight: 600; }
+            .cdp-cta-button { display: inline-block; background: linear-gradient(135deg, #0B8547FF 0%, #256D9BFF 100%); color: #ffffff !important; padding: 25px 45px; border-radius: 30px; text-decoration: none; font-size: 24px; font-weight: 600; }
             .cdp-cta-button:hover { transform: translateY(-2px); box-shadow: 0 4px 15px rgba(39, 174, 96, 0.4); }
-            .cdp-nota { font-size: 13px; color: #888; margin-top: 10px; }
+            .cdp-nota { font-size: 18px; color: #888; margin-top: 10px; font-weight: 600; }
             @media (max-width: 600px) {
                 .cdp-desglose { margin: 20px 15px; }
                 .cdp-desglose-header, .cdp-desglose-body { padding: 20px; }
@@ -172,16 +172,14 @@ class CDP_Shortcodes {
                 
                 <!-- Comisión -->
                 <div class="cdp-comision-box">
-                    <h4>PAGO ÚNICO – COMISIÓN DE LA AGENCIA (proceso selección):</h4>
+                    <h4>PAGO ÚNICO:<br>COMISIÓN DE LA AGENCIA<br>(proceso selección):</h4>
                     <p style="font-size: 24px; font-weight: 700;"><?php echo $this->formatear_moneda($p->comision_agencia_iva); ?></p>
                     <p class="cdp-nota">*No aplicamos tarifas adicionales por procesos acelerados de selección.</p>
                 </div>
                 
                 <!-- CTA -->
                 <div class="cdp-cta-box">
-                    <a href="tel:+34911336833" class="cdp-cta-button">
-                        📞 CONTRATAR - 911 33 68 33
-                    </a>
+                    <a href="#" class="cdp-cta-button">CONTRATAR</a>
                 </div>
                 
                 <!-- Info cliente -->
