@@ -172,7 +172,7 @@ class CDP_Mailer {
                                 <tr>
                                     <td align="center">
                                         <a href="<?php echo $url_detalle; ?>" 
-                                           style="display: inline-block; background: linear-gradient(135deg, #0B8547 0%, #256D9B 100%); color: #ffffff; padding: 20px 40px; border-radius: 30px; text-decoration: none; font-size: 16px; font-weight: 600; box-shadow: 0 4px 15px rgba(44, 140, 190, 0.3);">
+                                           style="display: inline-block; background: linear-gradient(135deg, #0B8547 0%, #256D9B 100%); color: #ffffff; padding: 20px 40px; border-radius: 30px; text-decoration: none; font-size: 16px; font-weight: 600; box-shadow: 0 4px 15px rgba(44, 140, 190, 0.3); text-transform: uppercase;">
                                             Detalle Presupuesto
                                         </a>
                                     </td>
