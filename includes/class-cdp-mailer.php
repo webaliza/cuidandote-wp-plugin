@@ -94,9 +94,9 @@ class CDP_Mailer {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Propuesta de Asistencia - Cuidándote</title>
 </head>
-<body style="margin: 0; padding: 0; background-color: #f5f5f5; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
+<body style="margin: 0; padding: 0; font-family: Georgia, 'Times New Roman', Times, serif;">
     
-    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color: #f5f5f5;">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
         <tr>
             <td align="center" style="padding: 20px 10px;">
                 
@@ -104,8 +104,13 @@ class CDP_Mailer {
                     
                     <!-- Header -->
                     <tr>
-                        <td style="background: linear-gradient(135deg, #2c8cbe 0%, #1a5276 100%); padding: 30px; text-align: center;">
-                            <h1 style="margin: 0; color: #ffffff; font-size: 28px; font-weight: 600;">
+                        <td>
+                            <img src="https://cuidandoteserviciosauxiliares.com/wp-content/uploads/2025/12/Banner-01_Mesa-de-trabajo-1.jpg">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <h1 style="margin: 0; padding-right: 100px; color: #256D9B; font-size: 28px; font-weight: 600; text-align: right;">
                                 Propuesta de Asistencia
                             </h1>
                         </td>
@@ -119,33 +124,34 @@ class CDP_Mailer {
                             <p style="margin: 0 0 20px; color: #333; font-size: 16px; line-height: 1.6;">
                                 Estimado/a <strong><?php echo $nombre; ?></strong>,
                             </p>
-                            <p style="margin: 0 0 30px; color: #555; font-size: 15px; line-height: 1.7;">
+                            <p style="margin: 0 0 30px; color: #555; font-size: 16px; line-height: 1.7;">
                                 Te compartimos el enlace a tu presupuesto personalizado. Adicionalmente, un consultor te estará asesorando sin compromiso para ayudarte a encontrar las mejores modalidades de servicio según tus necesidades.
                             </p>
                             
                             <!-- Card del servicio -->
                             <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-bottom: 30px;">
                                 <tr>
-                                    <td style="background: #f8f9fa; border-radius: 12px; padding: 25px; text-align: center;">
+                                    <td style="border-radius: 12px; padding: 25px; text-align: center;">
                                         
                                         <!-- Icono cuidador -->
-                                        <div style="width: 70px; height: 70px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 50%; margin: 0 auto 15px; display: flex; align-items: center; justify-content: center;">
-                                            <span style="font-size: 32px;">👩‍⚕️</span>
-                                        </div>
-                                        
+                                        <img src="https://cuidandoteserviciosauxiliares.com/wp-content/uploads/2025/12/cuidadora.jpg">
+
                                         <!-- Servicio -->
-                                        <p style="margin: 0 0 5px; color: #667eea; font-size: 13px; font-weight: 600; text-transform: uppercase;">
+                                        <p style="margin: 0 0 5px; color: #256D9B; font-size: 13px; font-weight: 600; text-transform: uppercase;">
                                             Servicio solicitado
                                         </p>
                                         <p style="margin: 0 0 20px; color: #333; font-size: 16px;">
                                             <?php echo $servicio; ?>
                                         </p>
-                                        
+
+                                    </td>
+
+                                    <td>
                                         <!-- Precio -->
-                                        <p style="margin: 0 0 5px; color: #667eea; font-size: 13px; font-weight: 600;">
+                                        <p style="margin: 0 0 5px; font-size: 16px; font-weight: 600;">
                                             Pago mensual para el cuidador/a
                                         </p>
-                                        <p style="margin: 0; color: #2c8cbe; font-size: 36px; font-weight: 700;">
+                                        <p style="margin: 0; color: #256D9B; font-size: 36px; font-weight: 500;">
                                             <?php echo $pago_mensual; ?>/mes
                                         </p>
                                     </td>
@@ -153,10 +159,10 @@ class CDP_Mailer {
                             </table>
                             
                             <!-- Mensaje adicional -->
-                            <p style="margin: 0 0 25px; color: #555; font-size: 15px; line-height: 1.7; text-align: center;">
+                            <p style="margin: 0 0 25px; color: #555; font-size: 16px; line-height: 1.7; text-align: center;">
                                 Si tienes cualquier duda o deseas ajustar algún detalle, estaremos encantados de ayudarte.
                             </p>
-                            <p style="margin: 0 0 30px; color: #555; font-size: 15px; text-align: center;">
+                            <p style="margin: 0 0 30px; color: #555; font-size: 16px; text-align: center;">
                                 Un cordial saludo,<br>
                                 <strong>Equipo Cuidándote</strong>
                             </p>
@@ -166,7 +172,7 @@ class CDP_Mailer {
                                 <tr>
                                     <td align="center">
                                         <a href="<?php echo $url_detalle; ?>" 
-                                           style="display: inline-block; background: linear-gradient(135deg, #2c8cbe 0%, #1a5276 100%); color: #ffffff; padding: 16px 40px; border-radius: 30px; text-decoration: none; font-size: 16px; font-weight: 600; box-shadow: 0 4px 15px rgba(44, 140, 190, 0.3);">
+                                           style="display: inline-block; background: linear-gradient(135deg, #0B8547 0%, #256D9B 100%); color: #ffffff; padding: 20px 40px; border-radius: 30px; text-decoration: none; font-size: 16px; font-weight: 600; box-shadow: 0 4px 15px rgba(44, 140, 190, 0.3);">
                                             Detalle Presupuesto
                                         </a>
                                     </td>
@@ -179,32 +185,31 @@ class CDP_Mailer {
                     <!-- Logos institucionales -->
                     <tr>
                         <td style="padding: 20px 30px; background: #f8f9fa; text-align: center;">
-                            <p style="margin: 0 0 10px; color: #888; font-size: 12px;">
-                                Nº Agencia de Colocación: 1300000329
-                            </p>
-                            <p style="margin: 0; color: #2c8cbe; font-size: 14px; font-weight: 600;">
-                                AVALADOS POR LA COMUNIDAD DE MADRID
-                            </p>
+                            <img src="https://cuidandoteserviciosauxiliares.com/wp-content/uploads/2025/12/mejores-empresas-cuidadores-de-personas-mayores-madrid-e1728305688472.jpg">
+                            <br>
+                            <h2 style="margin: 0; color: #256D9B; font-size: 36px; font-weight: 600; text-align: center;">AVALADOS POR LA COMUNIDAD DE MADRID</h2>
                         </td>
                     </tr>
                     
                     <!-- Footer -->
                     <tr>
-                        <td style="background: linear-gradient(135deg, #1a5276 0%, #0d3d56 100%); padding: 25px 30px; text-align: center;">
-                            <p style="margin: 0 0 5px; color: #ffffff; font-size: 18px; font-weight: 700;">
+                        <td style="background: #256D9B; padding: 25px 30px; text-align: center;">
+                            <p style="margin: 0 0 5px; color: #ffffff; font-size: 22px; font-weight: 700;">
                                 CUIDADO DE MAYORES
                             </p>
-                            <p style="margin: 0 0 15px; color: rgba(255,255,255,0.8); font-size: 13px;">
+                            <p style="margin: 0 0 15px; color: rgba(255,255,255,0.8); font-size: 16px;">
                                 Un servicio profesional de CALIDAD y TRATO HUMANO.<br>
                                 Comprometidos en encontrar la MEJOR SOLUCIÓN, sin compromiso
                             </p>
                             <p style="margin: 0;">
                                 <a href="tel:+34911336833" style="color: #ffffff; text-decoration: none; font-size: 20px; font-weight: 600;">
-                                    📞 911 33 68 33
+                                    ☎ 911 33 68 33
                                 </a>
                             </p>
-                            <p style="margin: 10px 0 0; color: rgba(255,255,255,0.7); font-size: 13px;">
-                                Cuidándote Servicios Auxiliares
+                            <p style="margin: 10px 0 0; font-size: 14px;">
+                                <a href="https://cuidandoteserviciosauxiliares.com" style="color: rgba(255,255,255,0.7); text-decoration: none;">
+                                    Cuidándote Servicios Auxiliares
+                                </a>
                             </p>
                         </td>
                     </tr>
