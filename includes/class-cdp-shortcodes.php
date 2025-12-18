@@ -1,7 +1,7 @@
 <?php
 /**
  * Clase para shortcodes
- * 
+ *
  * Renderiza el presupuesto detallado y la página de agradecimiento
  */
 
@@ -10,7 +10,7 @@ if (!defined('ABSPATH')) {
 }
 
 class CDP_Shortcodes {
-    
+
     /**
      * Constructor
      */
@@ -19,40 +19,40 @@ class CDP_Shortcodes {
         add_shortcode('cuidandote_presupuesto_solicitado', array($this, 'render_presupuesto_solicitado'));
         add_shortcode('cuidandote_formulario', array($this, 'render_formulario'));
     }
-    
+
     /**
      * Renderizar presupuesto detallado
      */
     public function render_presupuesto($atts) {
         $atts = shortcode_atts(array(
-            'class' => '',
+                'class' => '',
         ), $atts);
-        
+
         // Obtener token de la URL
         $token = isset($_GET['token']) ? sanitize_text_field($_GET['token']) : null;
-        
+
         if (!$token) {
             return $this->render_error('No se encontró el token del presupuesto.');
         }
-        
+
         // Obtener presupuesto
         $presupuesto = CDP_Database::get_presupuesto_por_token($token);
-        
+
         if (!$presupuesto) {
             return $this->render_error('El presupuesto no existe o ha expirado.');
         }
-        
+
         // Verificar expiración
         if (strtotime($presupuesto->token_expira_at) < time()) {
             return $this->render_error('Este enlace ha expirado. Por favor, solicita un nuevo presupuesto.');
         }
-        
+
         // Marcar como usado
         CDP_Database::marcar_token_usado($token);
-        
+
         return $this->render_desglose($presupuesto, $atts['class']);
     }
-    
+
     /**
      * Renderizar mensaje de error
      */
@@ -63,14 +63,14 @@ class CDP_Shortcodes {
             <p style="margin: 20px 0 0;"><a href="' . esc_url(home_url()) . '" style="color: #667eea;">Volver al inicio</a></p>
         </div>';
     }
-    
+
     /**
      * Formatear moneda
      */
     private function formatear_moneda($valor) {
         return number_format((float) $valor, 2, ',', '.') . '€';
     }
-    
+
     /**
      * Renderizar desglose del presupuesto
      */
@@ -110,42 +110,128 @@ class CDP_Shortcodes {
                 .cdp-total-box { flex-direction: column; text-align: center; gap: 10px; }
             }
         </style>
-        
+
         <div class="cdp-desglose <?php echo esc_attr($class); ?>">
             <div class="cdp-desglose-header">
                 <h1>DETALLE PRESUPUESTO</h1>
             </div>
-            
+
             <div class="cdp-desglose-body">
                 <!-- Servicio -->
                 <div class="cdp-servicio-box">
                     <h3>Servicio solicitado</h3>
                     <p><?php echo esc_html($p->tipo_servicio_label); ?></p>
                 </div>
-                
+
                 <p class="cdp-nota">La contratación se realiza por cuenta del cliente</p>
-                
+
+                <!-- Detalles del servicio -->
+                <?php
+                $dias_semana = json_decode($p->dias_semana, true);
+                $horario_detalle = json_decode($p->horario_detalle, true);
+
+                // Mapeo de días en español
+                $dias_map = array(
+                        'monday' => 'Lunes',
+                        'tuesday' => 'Martes',
+                        'wednesday' => 'Miércoles',
+                        'thursday' => 'Jueves',
+                        'friday' => 'Viernes',
+                        'saturday' => 'Sábado',
+                        'sunday' => 'Domingo'
+                );
+
+                $dias_texto = array();
+                if (is_array($dias_semana)) {
+                    foreach ($dias_semana as $dia) {
+                        if (isset($dias_map[$dia])) {
+                            $dias_texto[] = $dias_map[$dia];
+                        }
+                    }
+                }
+
+                // Determinar horario
+                $horario_texto = '';
+                if ($p->horario_tipo === '24h') {
+                    $horario_texto = '24 horas (día completo)';
+                } elseif ($p->horario_tipo === 'same' && isset($horario_detalle['same'])) {
+                    $horario_texto = esc_html($horario_detalle['same']['start']) . ' - ' . esc_html($horario_detalle['same']['end']);
+                } elseif ($p->horario_tipo === 'different' && is_array($horario_detalle)) {
+                    $horarios_diferentes = array();
+                    foreach ($horario_detalle as $dia => $horario) {
+                        if (isset($dias_map[$dia]) && isset($horario['start']) && isset($horario['end'])) {
+                            $horarios_diferentes[] = $dias_map[$dia] . ': ' . esc_html($horario['start']) . '-' . esc_html($horario['end']);
+                        }
+                    }
+                    $horario_texto = implode('<br>', $horarios_diferentes);
+                }
+
+                // Duración
+                $duracion_map = array(
+                        'corta' => 'Corta duración (menos de 3 meses)',
+                        'larga' => 'Larga duración (más de 3 meses)'
+                );
+                $duracion_texto = isset($duracion_map[$p->duracion_tipo]) ? $duracion_map[$p->duracion_tipo] : ucfirst($p->duracion_tipo);
+                ?>
+
+                <div style="background: #e8f4f8; border: 2px solid #2c8cbe; padding: 20px; border-radius: 8px; margin: 20px 0;">
+                    <h3 style="color: #2c8cbe; margin: 0 0 15px; font-size: 16px; text-transform: uppercase;">
+                        📋 Detalles del Servicio Solicitado
+                    </h3>
+
+                    <div style="display: grid; gap: 12px;">
+                        <div style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #d0e8f2;">
+                            <span style="color: #555; font-weight: 500;">Horas semanales:</span>
+                            <span style="color: #333; font-weight: 600;"><?php echo esc_html(number_format($p->horas_semanales, 0)); ?> horas</span>
+                        </div>
+
+                        <?php if (!empty($dias_texto)): ?>
+                            <div style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #d0e8f2;">
+                                <span style="color: #555; font-weight: 500;">Días de servicio:</span>
+                                <span style="color: #333; font-weight: 600;"><?php echo esc_html(implode(', ', $dias_texto)); ?></span>
+                            </div>
+                        <?php endif; ?>
+
+                        <?php if ($horario_texto): ?>
+                            <div style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #d0e8f2;">
+                                <span style="color: #555; font-weight: 500;">Horario:</span>
+                                <span style="color: #333; font-weight: 600; text-align: right;"><?php echo $horario_texto; ?></span>
+                            </div>
+                        <?php endif; ?>
+
+                        <div style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #d0e8f2;">
+                            <span style="color: #555; font-weight: 500;">Duración estimada:</span>
+                            <span style="color: #333; font-weight: 600;"><?php echo esc_html($duracion_texto); ?></span>
+                        </div>
+
+                        <div style="display: flex; justify-content: space-between; padding: 8px 0;">
+                            <span style="color: #555; font-weight: 500;">Semanas por mes:</span>
+                            <span style="color: #333; font-weight: 600;"><?php echo esc_html($p->semanas_mes); ?> semanas</span>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Retribución -->
                 <h3 class="cdp-section-title">RETRIBUCIÓN CUIDADOR/A</h3>
-                
+
                 <div class="cdp-item-row">
                     <span class="cdp-item-label">Salario Neto mensual</span>
                     <span class="cdp-item-value"><?php echo $this->formatear_moneda($p->salario_neto); ?></span>
                 </div>
-                
+
                 <div class="cdp-item-row">
                     <span class="cdp-item-label">Cotización a la Seguridad Social</span>
                     <span class="cdp-item-value"><?php echo $this->formatear_moneda($p->cotizacion_ss); ?></span>
                 </div>
-                
+
                 <!-- Servicio de Asistencia -->
                 <h3 class="cdp-section-title">Servicio de Asistencia</h3>
-                
+
                 <div class="cdp-item-row">
                     <span class="cdp-item-label">Cuota CUIDÁNDOTE (IVA inc.)</span>
                     <span class="cdp-item-value"><?php echo $this->formatear_moneda($p->cuota_cuidandote_iva); ?></span>
                 </div>
-                
+
                 <!-- Info cuota -->
                 <div class="cdp-cuota-info">
                     <h4>La cuota CUIDÁNDOTE supone:</h4>
@@ -161,32 +247,38 @@ class CDP_Shortcodes {
                         <li>Descuentos exclusivos en la contratación de cualquier servicio adicional ofrecido.</li>
                     </ul>
                 </div>
-                
+
                 <!-- Total -->
                 <div class="cdp-total-box">
                     <span class="cdp-total-label">PAGO MENSUAL:</span>
                     <span class="cdp-total-value"><?php echo $this->formatear_moneda($p->pago_mensual); ?></span>
                 </div>
-                
+
                 <p class="cdp-nota">*Una vez aprobado el presupuesto, se le enviará el documento online de "Protección de Datos" para su correspondiente aceptación, y tras ello, recibirá la "Carta de condiciones y garantía" para su firma.</p>
-                
+
                 <!-- Comisión -->
                 <div class="cdp-comision-box">
                     <h4>PAGO ÚNICO:<br>COMISIÓN DE LA AGENCIA<br>(proceso selección):</h4>
                     <p style="font-size: 24px; font-weight: 700;"><?php echo $this->formatear_moneda($p->comision_agencia_iva); ?></p>
                     <p class="cdp-nota">*No aplicamos tarifas adicionales por procesos acelerados de selección.</p>
                 </div>
-                
+
                 <!-- CTA -->
-                <div class="cdp-cta-box">
-                    <a href="#" class="cdp-cta-button">CONTRATAR</a>
-                </div>
-                
+                <?php if (!current_user_can('manage_options')): ?>
+                    <div class="cdp-cta-box">
+                        <a href="#" class="cdp-cta-button">CONTRATAR</a>
+                    </div>
+                <?php endif; ?>
+
                 <!-- Info cliente -->
                 <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin-top: 20px;">
                     <p style="margin: 0; color: #666; font-size: 14px;">
                         <strong>Cliente:</strong> <?php echo esc_html($p->nombre); ?><br>
+                        <strong>Email:</strong> <?php echo esc_html($p->email); ?><br>
                         <strong>Teléfono:</strong> <?php echo esc_html($p->telefono); ?>
+                        <?php if (!empty($p->codigo_postal)): ?><br>
+                            <strong>Código Postal:</strong> <?php echo esc_html($p->codigo_postal); ?>
+                        <?php endif; ?>
                     </p>
                 </div>
             </div>
@@ -194,15 +286,15 @@ class CDP_Shortcodes {
         <?php
         return ob_get_clean();
     }
-    
+
     /**
      * Renderizar página de presupuesto solicitado (agradecimiento)
      */
     public function render_presupuesto_solicitado($atts) {
         $atts = shortcode_atts(array(
-            'class' => '',
+                'class' => '',
         ), $atts);
-        
+
         ob_start();
         ?>
         <style>
@@ -234,7 +326,7 @@ class CDP_Shortcodes {
                 .cdp-gracias-card { padding: 20px; }
             }
         </style>
-        
+
         <div class="cdp-gracias-container <?php echo esc_attr($atts['class']); ?>">
             <!-- Icono de éxito -->
             <div class="cdp-gracias-icon">
@@ -242,15 +334,15 @@ class CDP_Shortcodes {
                     <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
                 </svg>
             </div>
-            
+
             <!-- Título -->
             <h1 class="cdp-gracias-title">¡Gracias por tu interés!</h1>
-            
+
             <!-- Subtítulo -->
             <p class="cdp-gracias-subtitle">
                 Hemos recibido tu solicitud de presupuesto correctamente.
             </p>
-            
+
             <!-- Card con instrucciones del email -->
             <div class="cdp-gracias-card">
                 <div class="cdp-gracias-card-title">
@@ -260,40 +352,40 @@ class CDP_Shortcodes {
                     Revisa tu correo electrónico
                 </div>
                 <p>
-                    Te hemos enviado un email con el <strong>detalle completo de tu presupuesto personalizado</strong>. 
+                    Te hemos enviado un email con el <strong>detalle completo de tu presupuesto personalizado</strong>.
                     En él encontrarás el desglose de costes, los servicios incluidos y un enlace para ver toda la información.
                 </p>
             </div>
-            
+
             <!-- Aviso de spam -->
             <div class="cdp-gracias-spam-tip">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                     <path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/>
                 </svg>
                 <p>
-                    Si no ves el email en tu bandeja de entrada, <strong>revisa la carpeta de spam o correo no deseado</strong>. 
+                    Si no ves el email en tu bandeja de entrada, <strong>revisa la carpeta de spam o correo no deseado</strong>.
                     El remitente es <em>info@cuidandoteserviciosauxiliares.com</em>.
                 </p>
             </div>
-            
+
             <!-- Pasos siguientes -->
             <div class="cdp-gracias-steps">
                 <h3 style="font-size: 18px; color: #1a1a2e; margin-bottom: 20px;">¿Qué sucede ahora?</h3>
-                
+
                 <div class="cdp-gracias-step">
                     <div class="cdp-gracias-step-number">1</div>
                     <div class="cdp-gracias-step-text">
                         <strong>Revisa tu presupuesto</strong> haciendo clic en el botón "Detalle Presupuesto" del email.
                     </div>
                 </div>
-                
+
                 <div class="cdp-gracias-step">
                     <div class="cdp-gracias-step-number">2</div>
                     <div class="cdp-gracias-step-text">
                         Si lo has solicitado, <strong>un consultor te contactará</strong> para resolver cualquier duda y ayudarte a encontrar la mejor solución.
                     </div>
                 </div>
-                
+
                 <div class="cdp-gracias-step">
                     <div class="cdp-gracias-step-number">3</div>
                     <div class="cdp-gracias-step-text">
@@ -301,7 +393,7 @@ class CDP_Shortcodes {
                     </div>
                 </div>
             </div>
-            
+
             <!-- Contacto -->
             <div class="cdp-gracias-contact">
                 <p>¿Tienes alguna pregunta urgente? Llámanos directamente:</p>
@@ -316,16 +408,16 @@ class CDP_Shortcodes {
         <?php
         return ob_get_clean();
     }
-    
+
     /**
      * Renderizar iframe del formulario Nuxt
      */
     public function render_formulario($atts) {
         $atts = shortcode_atts(array(
-            'url' => get_option('cdp_nuxt_url', 'https://cuidandote.webaliza.cat'),
-            'height' => '800px',
+                'url' => get_option('cdp_nuxt_url', 'https://cuidandote.webaliza.cat'),
+                'height' => '800px',
         ), $atts);
-        
+
         return '<iframe src="' . esc_url($atts['url']) . '" 
                         style="width: 100%; height: ' . esc_attr($atts['height']) . '; border: none;" 
                         title="Formulario de solicitud de presupuesto"></iframe>';
