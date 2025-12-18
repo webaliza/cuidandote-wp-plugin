@@ -140,7 +140,7 @@ class CDP_Admin_Notification {
                     
                     <!-- Header con color corporativo -->
                     <tr>
-                        <td style="background: linear-gradient(135deg, #0B8547 0%, #256D9B 100%); padding: 30px; text-align: center; border-radius: 8px 8px 0 0;">
+                        <td style="background: linear-gradient(135deg, #2c8cbe 0%, #1A5276FF 100%); padding: 30px; text-align: center; border-radius: 8px 8px 0 0;">
                             <h1 style="margin: 0; color: #ffffff; font-size: 24px; font-weight: bold;">
                                 🔔 Nuevo Presupuesto Solicitado
                             </h1>
