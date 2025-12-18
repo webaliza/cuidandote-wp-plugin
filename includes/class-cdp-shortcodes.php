@@ -266,7 +266,7 @@ class CDP_Shortcodes {
                 <!-- CTA -->
                 <?php if (!current_user_can('manage_options')): ?>
                     <div class="cdp-cta-box">
-                        <a href="#" class="cdp-cta-button">CONTRATAR</a>
+                        <a href="/comienzo-del-proceso-de-seleccion/" class="cdp-cta-button">CONTRATAR</a>
                     </div>
                 <?php endif; ?>
 
