@@ -1,128 +1,129 @@
 <?php
 /**
  * Cuidándote - Notificación a Administradores
- * 
+ *
  * Envía emails de notificación a los administradores cuando
  * un usuario solicita un presupuesto.
- * 
+ *
  * @package CuidandotePresupuestos
  * @version 2.0
  */
 
 if (!defined('ABSPATH')) {
-    exit;
+	exit;
 }
 
 class CDP_Admin_Notification {
-    
-    /**
-     * Email de destino para notificaciones
-     */
-    private $admin_email = 'info@cuidandoteserviciosauxiliares.com';
-    
-    /**
-     * Constructor
-     */
-    public function __construct() {
-        // Conectar al hook cuando se guarda un presupuesto
-        add_action('cdp_presupuesto_guardado', array($this, 'enviar_notificacion_admin'), 20, 2);
-        
-        // Permitir configurar el email desde opciones de WordPress
-        $email_config = get_option('cdp_admin_notification_email');
-        if (!empty($email_config)) {
-            $this->admin_email = $email_config;
-        }
-    }
-    
-    /**
-     * Enviar notificación a administradores
-     * 
-     * @param int $presupuesto_id ID del presupuesto guardado
-     * @param array $data Datos del presupuesto
-     */
-    public function enviar_notificacion_admin($presupuesto_id, $data) {
-        // Obtener datos completos del presupuesto de la BD
-        global $wpdb;
-        $tabla = $wpdb->prefix . 'cdp_presupuestos';
-        
-        $presupuesto = $wpdb->get_row($wpdb->prepare(
-            "SELECT * FROM $tabla WHERE id = %d",
-            $presupuesto_id
-        ), ARRAY_A);
-        
-        if (!$presupuesto) {
-            error_log('CDP Admin Notification: No se encontró presupuesto ID ' . $presupuesto_id);
-            return false;
-        }
-        
-        // Preparar datos para el email
-        $email_data = array(
-            'presupuesto_id' => $presupuesto_id,
-            'nombre' => $presupuesto['nombre'],
-            'email' => $presupuesto['email'],
-            'telefono' => $presupuesto['telefono'],
-            'codigo_postal' => $presupuesto['codigo_postal'] ?? 'No especificado',
-            'tipo_servicio' => $presupuesto['tipo_servicio_label'],
-            'horas_semanales' => $presupuesto['horas_semanales'],
-            'pago_mensual' => number_format($presupuesto['pago_mensual'], 2, ',', '.'),
-            'fecha_solicitud' => date('d/m/Y H:i', strtotime($presupuesto['created_at'])),
-            'llamada_fecha' => !empty($presupuesto['llamada_fecha']) ? date('d/m/Y', strtotime($presupuesto['llamada_fecha'])) : 'No programada',
-            'llamada_hora' => !empty($presupuesto['llamada_hora']) ? $presupuesto['llamada_hora'] : '',
-        );
-        
-        // Generar URL al panel de admin (si existe)
-        $admin_url = admin_url('admin.php?page=cuidandote-presupuestos&presupuesto_id=' . $presupuesto_id);
-        $email_data['admin_url'] = $admin_url;
-        
-        // Preparar el email
-        $to = $this->admin_email;
-        $subject = '🔔 Nuevo presupuesto solicitado - ' . $email_data['nombre'];
-        $message = $this->get_email_template($email_data);
-        $headers = array(
-            'Content-Type: text/html; charset=UTF-8',
-            'From: Sistema Cuidándote <noreply@cuidandoteserviciosauxiliares.com>',
-            'Reply-To: ' . $presupuesto['email'],
-        );
-        
-        // Enviar el email
-        $enviado = wp_mail($to, $subject, $message, $headers);
-        
-        if ($enviado) {
-            // Registrar en log
-            error_log(sprintf(
-                'CDP Admin Notification: Email enviado a %s para presupuesto #%d',
-                $to,
-                $presupuesto_id
-            ));
-            
-            // Actualizar registro en BD
-            $wpdb->update(
-                $tabla,
-                array('admin_notificado' => 1, 'admin_notificado_at' => current_time('mysql')),
-                array('id' => $presupuesto_id),
-                array('%d', '%s'),
-                array('%d')
-            );
-            
-            return true;
-        } else {
-            error_log(sprintf(
-                'CDP Admin Notification: ERROR al enviar email a %s para presupuesto #%d',
-                $to,
-                $presupuesto_id
-            ));
-            return false;
-        }
-    }
-    
-    /**
-     * Generar template HTML del email
-     * 
-     * @param array $data Datos del presupuesto
-     * @return string HTML del email
-     */
-    private function get_email_template($data) {
-        $template = '
+
+	/**
+	 * Email de destino para notificaciones
+	 */
+	private $admin_email = 'info@cuidandoteserviciosauxiliares.com';
+
+	/**
+	 * Constructor
+	 */
+	public function __construct() {
+		// Conectar al hook cuando se guarda un presupuesto
+		add_action('cdp_presupuesto_guardado', array($this, 'enviar_notificacion_admin'), 20, 2);
+
+		// Permitir configurar el email desde opciones de WordPress
+		$email_config = get_option('cdp_admin_notification_email');
+		if (!empty($email_config)) {
+			$this->admin_email = $email_config;
+		}
+	}
+
+	/**
+	 * Enviar notificación a administradores
+	 *
+	 * @param int $presupuesto_id ID del presupuesto guardado
+	 * @param array $data Datos del presupuesto
+	 */
+	public function enviar_notificacion_admin($presupuesto_id, $data) {
+		// Obtener datos completos del presupuesto de la BD
+		global $wpdb;
+		$tabla = $wpdb->prefix . 'cdp_presupuestos';
+
+		$presupuesto = $wpdb->get_row($wpdb->prepare(
+			"SELECT * FROM $tabla WHERE id = %d",
+			$presupuesto_id
+		), ARRAY_A);
+
+		if (!$presupuesto) {
+			error_log('CDP Admin Notification: No se encontró presupuesto ID ' . $presupuesto_id);
+			return false;
+		}
+
+		// Preparar datos para el email
+		$email_data = array(
+			'presupuesto_id' => $presupuesto_id,
+			'nombre' => $presupuesto['nombre'],
+			'email' => $presupuesto['email'],
+			'telefono' => $presupuesto['telefono'],
+			'codigo_postal' => $presupuesto['codigo_postal'] ?? 'No especificado',
+			'tipo_servicio' => $presupuesto['tipo_servicio_label'],
+			'horas_semanales' => $presupuesto['horas_semanales'],
+			'pago_mensual' => number_format($presupuesto['pago_mensual'], 2, ',', '.'),
+			'fecha_solicitud' => date('d/m/Y H:i', strtotime($presupuesto['created_at'])),
+			'llamada_fecha' => !empty($presupuesto['llamada_fecha']) ? date('d/m/Y', strtotime($presupuesto['llamada_fecha'])) : 'No programada',
+			'llamada_hora' => !empty($presupuesto['llamada_hora']) ? $presupuesto['llamada_hora'] : '',
+		);
+
+		// Generar URL a la página de desglose con token (igual que el cliente)
+		$page_slug = 'presupuesto-cuidadores';
+		$presupuesto_url = home_url('/' . $page_slug . '/?token=' . $presupuesto['token']);
+		$email_data['admin_url'] = $presupuesto_url;
+
+		// Preparar el email
+		$to = $this->admin_email;
+		$subject = '🔔 Nuevo presupuesto solicitado - ' . $email_data['nombre'];
+		$message = $this->get_email_template($email_data);
+		$headers = array(
+			'Content-Type: text/html; charset=UTF-8',
+			'From: Sistema Cuidándote <noreply@cuidandoteserviciosauxiliares.com>',
+			'Reply-To: ' . $presupuesto['email'],
+		);
+
+		// Enviar el email
+		$enviado = wp_mail($to, $subject, $message, $headers);
+
+		if ($enviado) {
+			// Registrar en log
+			error_log(sprintf(
+				'CDP Admin Notification: Email enviado a %s para presupuesto #%d',
+				$to,
+				$presupuesto_id
+			));
+
+			// Actualizar registro en BD
+			$wpdb->update(
+				$tabla,
+				array('admin_notificado' => 1, 'admin_notificado_at' => current_time('mysql')),
+				array('id' => $presupuesto_id),
+				array('%d', '%s'),
+				array('%d')
+			);
+
+			return true;
+		} else {
+			error_log(sprintf(
+				'CDP Admin Notification: ERROR al enviar email a %s para presupuesto #%d',
+				$to,
+				$presupuesto_id
+			));
+			return false;
+		}
+	}
+
+	/**
+	 * Generar template HTML del email
+	 *
+	 * @param array $data Datos del presupuesto
+	 * @return string HTML del email
+	 */
+	private function get_email_template($data) {
+		$template = '
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -263,7 +264,7 @@ class CDP_Admin_Notification {
                                     <td align="center">
                                         <a href="' . esc_url($data['admin_url']) . '" 
                                            style="display: inline-block; padding: 15px 40px; background: linear-gradient(135deg, #0B8547 0%, #256D9B 100%); color: #ffffff; text-decoration: none; border-radius: 30px; font-weight: bold; font-size: 16px; box-shadow: 0 4px 6px rgba(102, 126, 234, 0.3);">
-                                            Ver Detalles en el Panel Admin
+                                            Ver Desglose Completo
                                         </a>
                                     </td>
                                 </tr>
@@ -302,17 +303,17 @@ class CDP_Admin_Notification {
     </table>
 </body>
 </html>';
-        
-        return $template;
-    }
-    
-    /**
-     * Configurar email de administrador desde el panel
-     * (para usar en el archivo de configuración del plugin)
-     */
-    public static function config_admin_email($email) {
-        update_option('cdp_admin_notification_email', sanitize_email($email));
-    }
+
+		return $template;
+	}
+
+	/**
+	 * Configurar email de administrador desde el panel
+	 * (para usar en el archivo de configuración del plugin)
+	 */
+	public static function config_admin_email($email) {
+		update_option('cdp_admin_notification_email', sanitize_email($email));
+	}
 }
 
 // Inicializar la clase
