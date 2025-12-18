@@ -281,6 +281,16 @@ class CDP_Shortcodes {
                         <?php endif; ?>
                     </p>
                 </div>
+
+                <!-- Llamada programada -->
+                <?php if (!empty($p->llamada_fecha) && !empty($p->llamada_hora)): ?>
+                    <div style="background: #fff8e1; border: 2px solid #ffc107; padding: 15px; border-radius: 8px; margin-top: 15px;">
+                        <p style="margin: 0; color: #856404; font-size: 14px;">
+                            <strong>📞 Llamada programada:</strong><br>
+                            <?php echo date('d/m/Y', strtotime($p->llamada_fecha)); ?> a las <?php echo esc_html($p->llamada_hora); ?>
+                        </p>
+                    </div>
+                <?php endif; ?>
             </div>
         </div>
         <?php
